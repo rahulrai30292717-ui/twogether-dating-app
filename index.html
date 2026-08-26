@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Twogether Dating</title>
-<!-- Razorpay Checkout Integration -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -15,39 +14,27 @@
   .view.active { display: flex; }
   .view.dark { background: #111419; color: #fff; }
 
-  /* Top Navigation & Wallet Bar */
+  /* Top Bar */
   .top-bar { height: 56px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; background: #fff; border-bottom: 1px solid #eee; z-index: 10; }
   .dark .top-bar { background: #111419; border-bottom: 1px solid #222; }
   .logo-text { font-size: 22px; font-weight: 900; background: linear-gradient(45deg, #fd297b, #ff655b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  
   .wallet-pill { display: flex; align-items: center; gap: 6px; background: #fff4d9; border: 1.5px solid #ffb800; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 800; color: #d48806; cursor: pointer; }
-  .vip-badge { background: linear-gradient(45deg, #ffb800, #ff8c00); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; border: none; }
 
-  /* 1. Login View */
+  /* Splash */
   .splash-view { background: linear-gradient(180deg, #fd297b 0%, #ff5864 50%, #ff655b 100%); color: #fff; padding: 40px 24px; justify-content: space-between; align-items: center; text-align: center; }
   .tinder-logo { font-size: 46px; font-weight: 900; letter-spacing: -1px; margin-top: 140px; }
   .auth-btns { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
   .auth-btn { width: 100%; padding: 15px; border-radius: 30px; border: none; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; background: #fff; color: #222; }
 
-  /* 2. OTP View */
-  .otp-view { padding: 24px; background: #fff; color: #111; }
-  .back-arrow { font-size: 26px; cursor: pointer; margin-bottom: 20px; width: 30px; }
-  .otp-boxes { display: flex; justify-content: space-between; margin: 30px 0; }
-  .otp-boxes input { width: 42px; height: 50px; border: none; border-bottom: 2px solid #ccc; text-align: center; font-size: 24px; font-weight: 700; outline: none; }
-  .otp-boxes input:focus { border-bottom-color: #fe3c72; }
-  .btn-primary { width: 100%; padding: 16px; border-radius: 30px; border: none; background: linear-gradient(45deg, #fd297b, #ff655b); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 15px; }
+  /* Location Screen */
+  .loc-view { padding: 40px 24px; text-align: center; justify-content: space-between; background: #fff; color: #111; }
+  .loc-pin { width: 120px; height: 120px; border-radius: 50%; background: #f0f2f5; display: flex; align-items: center; justify-content: center; margin: 40px auto; font-size: 48px; }
+  .btn-primary { width: 100%; padding: 16px; border-radius: 30px; border: none; background: linear-gradient(45deg, #fd297b, #ff655b); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; }
 
-  /* 3. Bottom Navigation */
-  .bottom-nav { height: 54px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; z-index: 10; }
-  .dark .bottom-nav { background: #111419; border-top: 1px solid #222; }
-  .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #7c8591; font-weight: 700; cursor: pointer; gap: 3px; }
-  .nav-item.active { color: #fe3c72; }
-  .nav-icon { font-size: 20px; }
-
-  /* 4. Swipe Screen */
+  /* Swipe Screen */
   .swipe-area { flex: 1; position: relative; background: #000; overflow: hidden; }
   .profile-card { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-radius: 12px; margin: 6px; }
-  .top-banner { background: #fff; color: #111; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; align-self: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+  .top-banner { background: #fff; color: #111; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; align-self: center; }
   .card-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%); border-radius: 12px; }
   .card-content { position: relative; z-index: 2; color: #fff; margin-bottom: 75px; }
   .tag-pill { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; margin-right: 6px; margin-top: 6px; display: inline-block; }
@@ -56,74 +43,69 @@
   .s-pass { background: #21262e; color: #fd297b; }
   .s-like { background: #fe3c72; color: #fff; }
 
-  /* 5. Chat Screen */
+  /* Navigation */
+  .bottom-nav { height: 54px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; z-index: 10; }
+  .dark .bottom-nav { background: #111419; border-top: 1px solid #222; }
+  .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #7c8591; font-weight: 700; cursor: pointer; gap: 3px; }
+  .nav-item.active { color: #fe3c72; }
+  .nav-icon { font-size: 20px; }
+
+  /* Chat list */
   .chat-wrap { padding: 16px; overflow-y: auto; flex: 1; background: #fff; }
-  .match-bubbles { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 5px; }
-  .match-avatar { width: 70px; height: 95px; border-radius: 12px; background-size: cover; background-position: center; flex-shrink: 0; }
   .chat-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f0f2f5; cursor: pointer; }
   .chat-row img { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; }
 
-  /* 6. Active Chat Room Window */
+  /* Active Chat */
   .chat-room { display: flex; flex-direction: column; height: 100%; background: #f4f6f8; }
   .chat-header { height: 56px; background: #fff; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
   .chat-msgs { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
   .msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 14px; }
-  .msg-in { background: #fff; color: #222; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .msg-out { background: linear-gradient(45deg, #fd297b, #ff5864); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg-in { background: #fff; color: #222; align-self: flex-start; }
+  .msg-out { background: linear-gradient(45deg, #fd297b, #ff5864); color: #fff; align-self: flex-end; }
   .chat-input-bar { height: 60px; background: #fff; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #eee; }
-  .chat-input-bar input { flex: 1; height: 42px; border-radius: 25px; border: 1px solid #e0e0e0; background: #f8f9fa; padding: 0 16px; outline: none; font-size: 14px; }
-  .send-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: #fe3c72; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .chat-input-bar input { flex: 1; height: 42px; border-radius: 25px; border: 1px solid #e0e0e0; background: #f8f9fa; padding: 0 16px; outline: none; }
+  .send-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: #fe3c72; color: #fff; font-size: 18px; cursor: pointer; }
 
-  /* 7. Coin Store & Subscription Modal */
+  /* Modal */
   .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; justify-content: center; align-items: flex-end; }
   .modal-overlay.active { display: flex; }
-  .modal-sheet { width: 100%; background: #fff; border-radius: 24px 24px 0 0; padding: 24px; color: #111; max-height: 85%; overflow-y: auto; animation: slideUp 0.3s ease; }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  
+  .modal-sheet { width: 100%; background: #fff; border-radius: 24px 24px 0 0; padding: 24px; color: #111; max-height: 85%; overflow-y: auto; }
   .store-card { background: #f8f9fa; border: 1.5px solid #e9ecef; border-radius: 16px; padding: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-  .store-card.highlight { background: #fff9ea; border-color: #ffc107; }
-  .ad-reward-btn { width: 100%; background: #2ed573; color: #fff; padding: 15px; border-radius: 30px; border: none; font-weight: 800; font-size: 15px; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(46,213,115,0.3); }
-
-  /* 8. Ad Overlay Simulator */
-  .ad-simulator { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; flex-direction: column; justify-content: center; align-items: center; color: #fff; text-align: center; }
-  .ad-simulator.active { display: flex; }
+  .ad-reward-btn { width: 100%; background: #2ed573; color: #fff; padding: 15px; border-radius: 30px; border: none; font-weight: 800; font-size: 15px; cursor: pointer; margin: 10px 0; }
 </style>
 </head>
 <body>
 
 <div class="app-container">
 
-  <!-- 1. Splash / Login View -->
+  <!-- 1. Splash / Login -->
   <div class="view splash-view active" id="viewSplash">
     <div class="tinder-logo">🔥 Twogether</div>
     <div class="auth-btns">
-      <p style="font-size: 11px; margin-bottom: 8px; opacity: 0.9;">Sign in to connect with 100% verified real users.</p>
-      <button class="auth-btn" onclick="openLogin()"><span>📞</span> Continue with Phone Number</button>
-      <button class="auth-btn" onclick="openLogin()"><span>🌐</span> Continue with Google</button>
+      <p style="font-size: 11px; margin-bottom: 8px; opacity: 0.9;">By continuing, you agree to our Terms and Location tracking.</p>
+      <button class="auth-btn" onclick="requestGpsPermission()"><span>📞</span> Continue with Phone Number</button>
+      <button class="auth-btn" onclick="requestGpsPermission()"><span>🌐</span> Continue with Google</button>
     </div>
   </div>
 
-  <!-- 2. OTP View -->
-  <div class="view otp-view" id="viewOtp">
-    <div class="back-arrow" onclick="switchView('viewSplash')">←</div>
-    <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Enter Verification Code</h1>
-    <p style="color: #666; font-size: 14px;">Enter 4-digit demo code (1234)</p>
-    <div class="otp-boxes">
-      <input type="tel" maxlength="1" oninput="moveNext(this)" value="1">
-      <input type="tel" maxlength="1" oninput="moveNext(this)" value="2">
-      <input type="tel" maxlength="1" oninput="moveNext(this)" value="3">
-      <input type="tel" maxlength="1" oninput="moveNext(this)" value="4">
+  <!-- 2. GPS Location Permission -->
+  <div class="view loc-view" id="viewLocation">
+    <div>
+      <h1 style="font-size: 26px; font-weight: 800; margin-top: 20px;">Enable GPS Location</h1>
+      <p style="color: #666; font-size: 14px; margin-top: 15px; line-height: 1.4;">Twogether uses your real-time Google Maps & GPS location to find verified matches near your exact kilometer radius.</p>
     </div>
-    <button class="btn-primary" onclick="loginSuccess()">Verify & Start</button>
+    <div class="loc-pin">📍</div>
+    <div>
+      <button class="btn-primary" style="background: #111; margin-bottom: 15px;" onclick="fetchDeviceLocation()">Allow GPS Location</button>
+      <p style="font-size: 13px; color: #777;">Accuracy: High precision GPS active</p>
+    </div>
   </div>
 
-  <!-- 3. Swipe View -->
+  <!-- 3. Swipe Screen -->
   <div class="view dark" id="viewSwipe">
     <div class="top-bar">
       <div class="logo-text">🔥 Twogether</div>
-      <div class="wallet-pill" onclick="openStoreModal()">
-        <span>🪙</span> <span id="coinCountHeader">50</span> Coins
-      </div>
+      <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountHeader">50</span> Coins</div>
     </div>
     <div class="swipe-area" id="swipeCardArea"></div>
     <div class="bottom-nav">
@@ -134,7 +116,7 @@
     </div>
   </div>
 
-  <!-- 4. Explore View -->
+  <!-- 4. Explore Screen -->
   <div class="view" id="viewExplore">
     <div class="top-bar">
       <h2 style="font-size: 22px; font-weight: 900;">Explore</h2>
@@ -145,12 +127,10 @@
         <h3 style="font-size: 18px; font-weight: 800;">Get Tinder Gold 💎</h3>
         <p style="font-size: 12px; margin-top: 4px; opacity: 0.9;">Unlimited Chats without spending coins + See who liked you!</p>
       </div>
-      <h3 style="font-size: 16px; margin-bottom: 10px;">Popular Categories</h3>
+      <h3 style="font-size: 16px; margin-bottom: 10px;">Nearby Spots</h3>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">📺 Binge Watchers</div>
-        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">🌹 Serious Dating</div>
-        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">☕ Coffee Dates</div>
-        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">🌙 Free Tonight</div>
+        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">📍 Within 5 km</div>
+        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">📍 Within 15 km</div>
       </div>
     </div>
     <div class="bottom-nav">
@@ -161,32 +141,26 @@
     </div>
   </div>
 
-  <!-- 5. Chat List View -->
+  <!-- 5. Chat List Screen -->
   <div class="view" id="viewChat">
     <div class="top-bar">
       <h2 style="font-size: 22px; font-weight: 900;">Matches & Chat</h2>
       <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountChat">50</span></div>
     </div>
     <div class="chat-wrap">
-      <div style="font-size: 13px; font-weight: 800; color: #777; margin-bottom: 8px;">NEW MATCHES</div>
-      <div class="match-bubbles">
-        <div class="match-avatar" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200');" onclick="openChatRoom('Sabina Shaikh', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200')"></div>
-        <div class="match-avatar" style="background-image: url('https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200');" onclick="openChatRoom('Aanya Sharma', 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200')"></div>
-      </div>
-      
-      <div style="font-size: 13px; font-weight: 800; color: #777; margin-bottom: 8px;">CONVERSATIONS (5 Coins / Msg)</div>
+      <div style="font-size: 13px; font-weight: 800; color: #777; margin-bottom: 8px;">NEARBY ACTIVE MATCHES</div>
       <div class="chat-row" onclick="openChatRoom('Sabina Shaikh', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200')">
         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" alt="">
         <div style="flex:1;">
           <div style="font-weight: 800; font-size: 15px;">Sabina Shaikh ✔</div>
-          <div style="font-size: 13px; color: #777;">Hey! How are you doing?</div>
+          <div style="font-size: 12px; color: #2ed573;">📍 2.3 km away • Online</div>
         </div>
       </div>
       <div class="chat-row" onclick="openChatRoom('Aanya Sharma', 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200')">
         <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200" alt="">
         <div style="flex:1;">
           <div style="font-weight: 800; font-size: 15px;">Aanya Sharma ✔</div>
-          <div style="font-size: 13px; color: #777;">Let's grab coffee this weekend! ☕</div>
+          <div style="font-size: 12px; color: #2ed573;">📍 4.8 km away • Active today</div>
         </div>
       </div>
     </div>
@@ -210,7 +184,7 @@
         <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountRoom">50</span></div>
       </div>
       <div class="chat-msgs" id="chatMsgsBox">
-        <div class="msg-bubble msg-in">Hey! Glad we matched here 😊</div>
+        <div class="msg-bubble msg-in">Hey! Glad we matched in our area 😊</div>
       </div>
       <div class="chat-input-bar">
         <input type="text" id="userMsgInput" placeholder="Type a message (Costs 5 Coins)..." onkeydown="if(event.key==='Enter') sendChatMessage()">
@@ -219,7 +193,7 @@
     </div>
   </div>
 
-  <!-- 7. Profile View -->
+  <!-- 7. Profile Screen -->
   <div class="view" id="viewProfile">
     <div class="top-bar">
       <h2 style="font-size: 22px; font-weight: 900;">My Profile</h2>
@@ -228,7 +202,7 @@
     <div style="padding: 24px 16px; text-align: center; overflow-y: auto; flex: 1;">
       <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #fe3c72; margin-bottom: 10px;">
       <h2 style="font-size: 20px; font-weight: 800;">Rahul Rai <span style="color:#2ed573;">✔</span></h2>
-      <p style="color: #777; font-size: 13px;">Pune, India</p>
+      <p id="userGpsStatus" style="color: #777; font-size: 13px;">📍 Live GPS Connected</p>
 
       <div style="background:#fff4d9; border: 1.5px solid #ffc107; border-radius: 16px; padding: 16px; margin: 20px 0; text-align: left;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -238,7 +212,7 @@
         <button class="ad-reward-btn" onclick="watchRewardedAd()">▶ Watch Video & Get +10 Coins Free</button>
       </div>
 
-      <button class="btn-primary" style="margin-top: 0;" onclick="openStoreModal()">💎 Buy Coins or VIP Membership</button>
+      <button class="btn-primary" onclick="openStoreModal()">💎 Buy Coins or VIP Membership</button>
     </div>
     <div class="bottom-nav">
       <div class="nav-item" onclick="switchTab('viewSwipe')"><span class="nav-icon">🔥</span>Swipe</div>
@@ -248,7 +222,7 @@
     </div>
   </div>
 
-  <!-- Store & Coin Purchase Modal -->
+  <!-- Store Modal -->
   <div class="modal-overlay" id="storeModal">
     <div class="modal-sheet">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
@@ -256,83 +230,52 @@
         <span style="font-size: 24px; cursor: pointer;" onclick="closeStoreModal()">✕</span>
       </div>
 
-      <!-- Option 1: Watch Ad -->
-      <button class="ad-reward-btn" style="margin-bottom: 18px;" onclick="watchRewardedAd()">
+      <button class="ad-reward-btn" onclick="watchRewardedAd()">
         <span>📺</span> Watch Video Ad (+10 Coins Free)
       </button>
 
-      <!-- Option 2: Buy Coins -->
-      <div style="font-size: 13px; font-weight: 800; color: #666; margin-bottom: 8px;">BUY COIN PACKS (UPI / Cards)</div>
-      <div class="store-card" onclick="buyCoinsWithRazorpay(100, 49)">
+      <div style="font-size: 13px; font-weight: 800; color: #666; margin-bottom: 8px;">BUY COIN PACKS</div>
+      <div class="store-card" onclick="alert('Proceeding to Razorpay UPI (₹49)...')">
         <div>
-          <div style="font-weight: 800; font-size: 15px;">🪙 100 Coins</div>
-          <div style="font-size: 12px; color: #777;">Send ~20 Chat messages</div>
+          <b>🪙 100 Coins</b>
+          <div style="font-size: 12px; color: #777;">~20 Messages</div>
         </div>
         <button style="background:#fe3c72; color:#fff; border:none; padding:8px 16px; border-radius:20px; font-weight:700;">₹49</button>
       </div>
 
-      <div class="store-card highlight" onclick="buyCoinsWithRazorpay(500, 199)">
+      <div class="store-card" style="background: linear-gradient(135deg, #2b1122, #14151b); color:#fff; border: 1.5px solid #fe3c72;" onclick="alert('Proceeding to VIP Pass (₹399)...')">
         <div>
-          <div style="font-weight: 800; font-size: 15px;">🪙 500 Coins (Popular)</div>
-          <div style="font-size: 12px; color: #777;">Send ~100 Chat messages</div>
+          <b style="color: #ff758c;">👑 1 Month VIP Pass</b>
+          <div style="font-size: 12px; color: #ccc;">Unlimited Chats (No Coins Needed)</div>
         </div>
-        <button style="background:#ffb800; color:#111; border:none; padding:8px 16px; border-radius:20px; font-weight:800;">₹199</button>
+        <button style="background:#fe3c72; color:#fff; border:none; padding:8px 16px; border-radius:20px; font-weight:700;">₹399</button>
       </div>
-
-      <!-- Option 3: VIP Subscription -->
-      <div style="font-size: 13px; font-weight: 800; color: #666; margin: 16px 0 8px;">UNLIMITED VIP MEMBERSHIP</div>
-      <div class="store-card" style="background: linear-gradient(135deg, #2b1122, #14151b); color:#fff; border: 1.5px solid #fe3c72;" onclick="buySubscriptionRazorpay(399)">
-        <div>
-          <div style="font-weight: 800; font-size: 16px; color: #ff758c;">👑 1 Month VIP Pass</div>
-          <div style="font-size: 12px; color: #ccc;">Unlimited Free Chats (No Coins Needed!)</div>
-        </div>
-        <button style="background:linear-gradient(45deg, #fd297b, #ff655b); color:#fff; border:none; padding:8px 16px; border-radius:20px; font-weight:700;">₹399</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- AdMob Video Simulator Screen -->
-  <div class="ad-simulator" id="adSim">
-    <div style="font-size: 50px; margin-bottom: 20px;">📺</div>
-    <h2>Google AdMob Video Playing...</h2>
-    <p style="color: #aaa; margin: 12px 0 25px;">Please wait <span id="adTimer">5</span> seconds to earn 10 Coins</p>
-    <div style="width: 200px; height: 6px; background: #333; border-radius: 3px; overflow: hidden;">
-      <div id="adProgress" style="width: 0%; height: 100%; background: #2ed573; transition: width 1s linear;"></div>
     </div>
   </div>
 
 </div>
 
 <script>
-let userCoins = 50; // Welcome Bonus
-let isVipUser = false;
+let userCoins = 50;
+let userCoords = { lat: null, lng: null };
 let currentProfileIdx = 0;
 
 const profileList = [
   {
     name: "Sabina Shaikh",
     age: 22,
-    city: "Pune",
+    distanceKm: "2.3 km away",
     img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600",
     tags: ["Biryani", "Music", "Dancing", "Nightlife"]
   },
   {
     name: "Aanya Sharma",
     age: 23,
-    city: "Pune",
+    distanceKm: "4.8 km away",
     img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600",
     tags: ["Coffee", "Travel", "Indie Music", "Photography"]
   }
 ];
-
-function updateCoinDisplays() {
-  document.getElementById('coinCountHeader').innerText = userCoins;
-  document.getElementById('coinCountExp').innerText = userCoins;
-  document.getElementById('coinCountChat').innerText = userCoins;
-  document.getElementById('coinCountRoom').innerText = userCoins;
-  document.getElementById('coinCountProf').innerText = userCoins;
-  document.getElementById('profileCoinVal').innerText = isVipUser ? "VIP Active (Unlimited)" : userCoins + " Coins";
-}
 
 function switchView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -345,15 +288,46 @@ function switchTab(id) {
   updateCoinDisplays();
 }
 
-function openLogin() { switchView('viewOtp'); }
-function moveNext(el) { if(el.value.length === 1 && el.nextElementSibling) el.nextElementSibling.focus(); }
-function loginSuccess() { switchTab('viewSwipe'); }
+function requestGpsPermission() {
+  switchView('viewLocation');
+}
+
+function fetchDeviceLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        userCoords.lat = position.coords.latitude;
+        userCoords.lng = position.coords.longitude;
+        document.getElementById('userGpsStatus').innerText = `📍 Live GPS (${userCoords.lat.toFixed(2)}, ${userCoords.lng.toFixed(2)})`;
+        switchTab('viewSwipe');
+      },
+      (error) => {
+        // Fallback default coordinates if GPS off
+        userCoords.lat = 18.5204;
+        userCoords.lng = 73.8567;
+        switchTab('viewSwipe');
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  } else {
+    switchTab('viewSwipe');
+  }
+}
+
+function updateCoinDisplays() {
+  document.getElementById('coinCountHeader').innerText = userCoins;
+  document.getElementById('coinCountExp').innerText = userCoins;
+  document.getElementById('coinCountChat').innerText = userCoins;
+  document.getElementById('coinCountRoom').innerText = userCoins;
+  document.getElementById('coinCountProf').innerText = userCoins;
+  document.getElementById('profileCoinVal').innerText = userCoins + " Coins";
+}
 
 function renderCard() {
   const area = document.getElementById('swipeCardArea');
   area.innerHTML = '';
   if (currentProfileIdx >= profileList.length) {
-    area.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;text-align:center;padding:20px;">No more profiles nearby right now!</div>';
+    area.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;text-align:center;padding:20px;">No more verified users within your GPS radius right now!</div>';
     return;
   }
   const p = profileList[currentProfileIdx];
@@ -361,11 +335,11 @@ function renderCard() {
   card.className = 'profile-card';
   card.style.backgroundImage = `url('${p.img}')`;
   card.innerHTML = `
-    <div class="top-banner">💖 Verified Real User</div>
+    <div class="top-banner">📍 ${p.distanceKm} • Verified</div>
     <div class="card-gradient"></div>
     <div class="card-content">
       <h1 style="font-size: 28px; font-weight:800;">${p.name} ${p.age} <span style="font-size:20px;">✔</span></h1>
-      <div style="font-size: 13px; margin: 4px 0 10px;">👥 Interests</div>
+      <div style="font-size: 13px; margin: 4px 0 10px;">📍 GPS Matched Near You</div>
       <div>${p.tags.map(t => `<span class="tag-pill">${t}</span>`).join('')}</div>
     </div>
     <div class="swipe-btns">
@@ -400,18 +374,14 @@ function sendChatMessage() {
   const txt = inp.value.trim();
   if (!txt) return;
 
-  // Check Coins / VIP
-  if (!isVipUser && userCoins < 5) {
-    alert("Coin Balance Low! Watch a video ad or buy coins to continue chatting.");
+  if (userCoins < 5) {
+    alert("Not enough coins! Watch a video ad or buy coins to continue.");
     openStoreModal();
     return;
   }
 
-  // Deduct Coins if not VIP
-  if (!isVipUser) {
-    userCoins -= 5;
-    updateCoinDisplays();
-  }
+  userCoins -= 5;
+  updateCoinDisplays();
 
   const box = document.getElementById('chatMsgsBox');
   const msgEl = document.createElement('div');
@@ -421,102 +391,26 @@ function sendChatMessage() {
   inp.value = '';
   box.scrollTop = box.scrollHeight;
 
-  // Realistic instant reply
   setTimeout(() => {
     const replyEl = document.createElement('div');
     replyEl.className = 'msg-bubble msg-in';
-    replyEl.innerText = "That sounds lovely! Tell me more 😊";
+    replyEl.innerText = "Glad you messaged! How's your day going? 😊";
     box.appendChild(replyEl);
     box.scrollTop = box.scrollHeight;
   }, 1200);
 }
 
-/* Modals & Stores */
 function openStoreModal() { document.getElementById('storeModal').classList.add('active'); }
 function closeStoreModal() { document.getElementById('storeModal').classList.remove('active'); }
 
-/* Rewarded Video Ad Watcher */
 function watchRewardedAd() {
   closeStoreModal();
-  const adScreen = document.getElementById('adSim');
-  adScreen.classList.add('active');
-  let timeLeft = 5;
-  document.getElementById('adTimer').innerText = timeLeft;
-  document.getElementById('adProgress').style.width = '0%';
-
-  const timer = setInterval(() => {
-    timeLeft--;
-    document.getElementById('adTimer').innerText = timeLeft;
-    document.getElementById('adProgress').style.width = ((5 - timeLeft) * 20) + '%';
-
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      adScreen.classList.remove('active');
-      userCoins += 10;
-      updateCoinDisplays();
-      alert("🎉 You earned +10 Free Coins for watching video ad!");
-    }
-  }, 1000);
-}
-
-/* Razorpay Payment Integration */
-function buyCoinsWithRazorpay(coins, amountInINR) {
-  const options = {
-    key: "rzp_test_YOUR_KEY_HERE", // Replace with your Live/Test Razorpay Key ID
-    amount: amountInINR * 100, // paise
-    currency: "INR",
-    name: "Twogether Dating",
-    description: `Purchase ${coins} Chat Coins`,
-    handler: function(response) {
-      userCoins += coins;
-      updateCoinDisplays();
-      closeStoreModal();
-      alert(`Payment Successful! +${coins} coins added to your wallet.`);
-    },
-    theme: { color: "#fd297b" }
-  };
-  
-  if (window.Razorpay) {
-    const rzp = new Razorpay(options);
-    rzp.open();
-  } else {
-    // Fallback Simulator if testing offline
-    if (confirm(`Simulate UPI Payment of ₹${amountInINR} for ${coins} Coins?`)) {
-      userCoins += coins;
-      updateCoinDisplays();
-      closeStoreModal();
-      alert(`🎉 Payment of ₹${amountInINR} Successful! Added ${coins} Coins.`);
-    }
-  }
-}
-
-function buySubscriptionRazorpay(amountInINR) {
-  const options = {
-    key: "rzp_test_YOUR_KEY_HERE",
-    amount: amountInINR * 100,
-    currency: "INR",
-    name: "Twogether VIP Pass",
-    description: "1 Month Unlimited VIP Dating Pass",
-    handler: function(response) {
-      isVipUser = true;
-      updateCoinDisplays();
-      closeStoreModal();
-      alert("👑 Congratulations! You are now a VIP Member. Enjoy Unlimited Free Chats!");
-    },
-    theme: { color: "#ffb800" }
-  };
-  
-  if (window.Razorpay) {
-    const rzp = new Razorpay(options);
-    rzp.open();
-  } else {
-    if (confirm(`Simulate VIP Pass Purchase of ₹${amountInINR}?`)) {
-      isVipUser = true;
-      updateCoinDisplays();
-      closeStoreModal();
-      alert("👑 VIP Subscription Activated! Unlimited Chats Unlocked.");
-    }
-  }
+  alert("📺 AdMob Video Playing... (Simulated 5s)");
+  setTimeout(() => {
+    userCoins += 10;
+    updateCoinDisplays();
+    alert("🎉 You received +10 Free Coins for watching video ad!");
+  }, 3000);
 }
 
 updateCoinDisplays();
