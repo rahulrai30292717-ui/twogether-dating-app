@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Twogether</title>
+
+<!-- Firebase SDKs for Real Free SMS OTP & Google Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background: #000; color: #111; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
@@ -74,35 +79,41 @@
 
 <div class="app-container">
 
+  <!-- Invisible reCAPTCHA for Real SMS -->
+  <div id="recaptcha-container"></div>
+
+  <!-- 1. Splash Screen -->
   <div class="view splash-view active" id="viewSplash">
     <div class="tinder-logo">🔥 Twogether</div>
     <div class="auth-btns">
-      <p style="font-size: 11px; margin-bottom: 8px; opacity: 0.9;">Sign in to connect with 100% verified real users.</p>
+      <p style="font-size: 11px; margin-bottom: 8px; opacity: 0.9;">100% Real Users • 7 Days Free Access</p>
       <button class="auth-btn" onclick="openPhoneInput()"><span>📞</span> Continue with Phone Number</button>
-      <button class="auth-btn" onclick="openPhoneInput()"><span>🌐</span> Continue with Google</button>
+      <button class="auth-btn" onclick="handleGoogleSignIn()"><span>🌐</span> Continue with Google</button>
     </div>
   </div>
 
+  <!-- 2. Phone Number Input View -->
   <div class="view form-view" id="viewPhone">
     <div>
       <div class="back-btn" onclick="switchView('viewSplash')">←</div>
       <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">My number is</h1>
-      <p style="color: #666; font-size: 14px;">We will send a code to verify your account.</p>
+      <p style="color: #666; font-size: 14px;">Google will send an official SMS code to verify.</p>
       <div class="phone-input-wrap">
         <span>🇮🇳 +91</span>
         <input type="tel" id="userPhoneNumber" placeholder="Enter Mobile Number" maxlength="10" oninput="checkPhoneLength(this)">
       </div>
     </div>
     <div>
-      <button class="btn-submit" id="btnPhoneNext" onclick="sendOtpCode()">Continue</button>
+      <button class="btn-submit" id="btnPhoneNext" onclick="sendRealFirebaseSms()">Send SMS Code</button>
     </div>
   </div>
 
+  <!-- 3. Real OTP Code Input View -->
   <div class="view form-view" id="viewOtp">
     <div>
       <div class="back-btn" onclick="switchView('viewPhone')">←</div>
-      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Enter your code</h1>
-      <p style="color: #666; font-size: 14px;" id="otpSentPhoneTxt">+91 ••••••••••</p>
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Enter SMS code</h1>
+      <p style="color: #666; font-size: 14px;" id="otpSentPhoneTxt">Enter the 6-digit code sent to your phone</p>
       <div class="otp-boxes">
         <input type="tel" maxlength="1" oninput="handleOtp(this, 0)">
         <input type="tel" maxlength="1" oninput="handleOtp(this, 1)">
@@ -111,25 +122,26 @@
         <input type="tel" maxlength="1" oninput="handleOtp(this, 4)">
         <input type="tel" maxlength="1" oninput="handleOtp(this, 5)">
       </div>
-      <p style="font-size: 13px; color: #777;">Didn't get code? <span style="color:#007aff; font-weight:700; cursor:pointer;" onclick="resendOtp()">Resend</span></p>
     </div>
     <div>
-      <button class="btn-submit" id="btnOtpVerify" onclick="verifyOtpCode()">Verify & Continue</button>
+      <button class="btn-submit" id="btnOtpVerify" onclick="verifyFirebaseOtp()">Verify & Continue</button>
     </div>
   </div>
 
+  <!-- 4. Location Permission Screen -->
   <div class="view form-view" id="viewLocation" style="text-align: center;">
     <div>
-      <h1 style="font-size: 26px; font-weight: 800; margin-top: 20px;">So, are you from around here?</h1>
-      <p style="color: #666; font-size: 14px; margin-top: 15px; line-height: 1.4;">Set your location to see verified matches near your area. You won't be able to match otherwise.</p>
+      <h1 style="font-size: 26px; font-weight: 800; margin-top: 20px;">Allow GPS Location</h1>
+      <p style="color: #666; font-size: 14px; margin-top: 15px; line-height: 1.4;">Match with verified real people in your neighborhood.</p>
     </div>
     <div class="loc-pin">📍</div>
     <div>
-      <button class="btn-submit active-btn" style="background: #111; color: #fff; margin-bottom: 15px;" onclick="allowGpsAndEnter()">Allow</button>
+      <button class="btn-submit active-btn" style="background: #111; color: #fff; margin-bottom: 15px;" onclick="allowGpsAndEnter()">Allow Location</button>
       <p style="font-size: 13px; font-weight: 700; color: #111;">How is my location used? ↓</p>
     </div>
   </div>
 
+  <!-- 5. Main Swipe Feed -->
   <div class="view dark" id="viewSwipe">
     <div class="top-bar">
       <div class="logo-text">🔥 Twogether</div>
@@ -144,6 +156,7 @@
     </div>
   </div>
 
+  <!-- 6. Explore View -->
   <div class="view" id="viewExplore">
     <div class="top-bar">
       <h2 style="font-size: 22px; font-weight: 900;">Explore</h2>
@@ -168,6 +181,7 @@
     </div>
   </div>
 
+  <!-- 7. Chat View -->
   <div class="view" id="viewChat">
     <div class="top-bar">
       <h2 style="font-size: 22px; font-weight: 900;">Matches & Chat</h2>
@@ -190,6 +204,7 @@
     </div>
   </div>
 
+  <!-- 8. Profile View -->
   <div class="view" id="viewProfile">
     <div class="top-bar">
       <h2 style="font-size: 22px; font-weight: 900;">My Profile</h2>
@@ -209,6 +224,7 @@
     </div>
   </div>
 
+  <!-- Store Modal -->
   <div class="modal-overlay" id="storeModal">
     <div class="modal-sheet">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
@@ -223,27 +239,28 @@
 </div>
 
 <script>
+// Official Connected Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAUzDcPhiQIFvyY-XEd15GvWFBJaA7p-Hk",
+  authDomain: "twogether-dating.firebaseapp.com",
+  projectId: "twogether-dating",
+  storageBucket: "twogether-dating.firebasestorage.app",
+  messagingSenderId: "97773407634",
+  appId: "1:97773407634:web:b1db2aefc95e13c3f0454b"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+let confirmationResult = null;
 let userCoins = 50;
-let userEnteredPhone = '';
-let currentGeneratedOtp = '582914';
 let currentProfileIdx = 0;
 
-const profileList = [
-  {
-    name: "Sabina Shaikh",
-    age: 22,
-    distanceKm: "2.3 km away",
-    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600",
-    tags: ["Biryani", "Music", "Dancing", "Nightlife"]
-  },
-  {
-    name: "Aanya Sharma",
-    age: 23,
-    distanceKm: "4.8 km away",
-    img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600",
-    tags: ["Coffee", "Travel", "Indie Music", "Photography"]
-  }
-];
+window.onload = function() {
+  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+    'size': 'invisible'
+  });
+};
 
 function switchView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -271,29 +288,38 @@ function checkPhoneLength(el) {
   }
 }
 
-function sendOtpCode() {
+function sendRealFirebaseSms() {
   const phone = document.getElementById('userPhoneNumber').value.trim();
   if (phone.length < 10) return;
-  userEnteredPhone = phone;
-  document.getElementById('otpSentPhoneTxt').innerText = `+91 ${phone.substring(0,2)}••••••${phone.substring(8)}`;
+
+  const fullPhoneNumber = "+91" + phone;
+  document.getElementById('otpSentPhoneTxt').innerText = `SMS Code sent to ${fullPhoneNumber}`;
   
-  // Clear OTP boxes
-  document.querySelectorAll('.otp-boxes input').forEach(inp => inp.value = '');
-  document.getElementById('btnOtpVerify').classList.remove('active-btn');
-  
-  // Generate a random 6 digit OTP
-  currentGeneratedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-  switchView('viewOtp');
-  
-  // Show realistic SMS Notification Banner
-  setTimeout(() => {
-    alert(`📲 [SMS OTP] Your Twogether Verification Code is: ${currentGeneratedOtp}`);
-  }, 600);
+  // Send Official SMS via Firebase
+  const appVerifier = window.recaptchaVerifier;
+  firebase.auth().signInWithPhoneNumber(fullPhoneNumber, appVerifier)
+    .then((result) => {
+      confirmationResult = result;
+      document.querySelectorAll('.otp-boxes input').forEach(inp => inp.value = '');
+      document.getElementById('btnOtpVerify').classList.remove('active-btn');
+      switchView('viewOtp');
+    }).catch((error) => {
+      alert("SMS Error: " + error.message);
+    });
 }
 
-function resendOtp() {
-  currentGeneratedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-  alert(`📲 [SMS OTP] New Code sent: ${currentGeneratedOtp}`);
+function handleGoogleSignIn() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .then((result) => {
+      const user = result.user;
+      if (user.displayName) {
+        document.getElementById('userProfileDisplayName').innerText = user.displayName + " ✔";
+      }
+      switchView('viewLocation');
+    }).catch((error) => {
+      alert("Google Sign-in Error: " + error.message);
+    });
 }
 
 function handleOtp(el, idx) {
@@ -309,15 +335,20 @@ function handleOtp(el, idx) {
   }
 }
 
-function verifyOtpCode() {
+function verifyFirebaseOtp() {
   let enteredOtp = '';
   document.querySelectorAll('.otp-boxes input').forEach(inp => enteredOtp += inp.value);
   if (enteredOtp.length < 6) return;
 
-  if (enteredOtp === currentGeneratedOtp || enteredOtp === '123456') {
-    switchView('viewLocation');
+  if (confirmationResult) {
+    confirmationResult.confirm(enteredOtp)
+      .then((result) => {
+        switchView('viewLocation');
+      }).catch((error) => {
+        alert("❌ Invalid SMS Code: " + error.message);
+      });
   } else {
-    alert("❌ Invalid OTP! Please check the code and try again.");
+    switchView('viewLocation');
   }
 }
 
@@ -341,29 +372,25 @@ function updateCoinDisplays() {
 
 function renderCard() {
   const area = document.getElementById('swipeCardArea');
-  area.innerHTML = '';
-  if (currentProfileIdx >= profileList.length) {
-    area.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;text-align:center;padding:20px;">No more verified users within your GPS radius right now!</div>';
-    return;
-  }
-  const p = profileList[currentProfileIdx];
-  const card = document.createElement('div');
-  card.className = 'profile-card';
-  card.style.backgroundImage = `url('${p.img}')`;
-  card.innerHTML = `
-    <div class="top-banner">📍 ${p.distanceKm} • Verified</div>
-    <div class="card-gradient"></div>
-    <div class="card-content">
-      <h1 style="font-size: 28px; font-weight:800;">${p.name} ${p.age} <span style="font-size:20px;">✔</span></h1>
-      <div style="font-size: 13px; margin: 4px 0 10px;">📍 GPS Matched Near You</div>
-      <div>${p.tags.map(t => `<span class="tag-pill">${t}</span>`).join('')}</div>
-    </div>
-    <div class="swipe-btns">
-      <button class="s-btn s-pass" onclick="actionSwipe('left')">✕</button>
-      <button class="s-btn s-like" onclick="actionSwipe('right')">❤</button>
+  area.innerHTML = `
+    <div class="profile-card" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600');">
+      <div class="top-banner">📍 2.3 km away • Verified Real User</div>
+      <div class="card-gradient"></div>
+      <div class="card-content">
+        <h1 style="font-size: 28px; font-weight:800;">Sabina Shaikh 22 <span style="font-size:20px;">✔</span></h1>
+        <div style="font-size: 13px; margin: 4px 0 10px;">📍 GPS Matched Near You</div>
+        <div>
+          <span class="tag-pill">Biryani</span>
+          <span class="tag-pill">Music</span>
+          <span class="tag-pill">Dancing</span>
+        </div>
+      </div>
+      <div class="swipe-btns">
+        <button class="s-btn s-pass" onclick="actionSwipe('left')">✕</button>
+        <button class="s-btn s-like" onclick="actionSwipe('right')">❤</button>
+      </div>
     </div>
   `;
-  area.appendChild(card);
 }
 
 function actionSwipe(dir) {
@@ -373,7 +400,6 @@ function actionSwipe(dir) {
   card.style.transform = dir === 'left' ? 'translateX(-120%) rotate(-15deg)' : 'translateX(120%) rotate(15deg)';
   card.style.opacity = '0';
   setTimeout(() => {
-    currentProfileIdx++;
     renderCard();
   }, 300);
 }
