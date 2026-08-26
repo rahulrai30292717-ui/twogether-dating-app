@@ -4,230 +4,522 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Twogether Dating</title>
+<!-- Razorpay Checkout Integration -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body { background: #0f1015; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-  .app-container { width: 100%; max-width: 420px; height: 100%; max-height: 850px; position: relative; background: #14151b; overflow: hidden; display: flex; flex-direction: column; }
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { background: #000; color: #fff; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+  .app-container { width: 100%; max-width: 450px; height: 100%; position: relative; background: #000; overflow: hidden; display: flex; flex-direction: column; }
   
-  .screen { display: none; width: 100%; height: 100%; flex-direction: column; position: absolute; top: 0; left: 0; background: #14151b; overflow-y: auto; }
-  .screen.active { display: flex; }
+  .view { display: none; width: 100%; height: 100%; flex-direction: column; position: absolute; top: 0; left: 0; background: #fff; color: #000; }
+  .view.active { display: flex; }
+  .view.dark { background: #111419; color: #fff; }
 
-  /* 1. Login & OTP Screens */
-  .auth-wrap { padding: 30px 24px; justify-content: space-between; align-items: center; text-align: center; background: radial-gradient(circle at top, #2b1122 0%, #14151b 70%); }
-  .brand-logo { font-size: 38px; font-weight: 900; background: linear-gradient(45deg, #ff416c, #ff4b4b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 40px; }
-  .auth-form { width: 100%; display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
-  .input-box { width: 100%; padding: 15px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.07); color: #fff; font-size: 16px; outline: none; text-align: center; }
-  .btn-main { width: 100%; padding: 15px; border-radius: 30px; border: none; background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,65,108,0.4); }
-  .btn-sub { background: transparent; border: 1px solid rgba(255,255,255,0.2); box-shadow: none; }
-
-  /* 2. Setup Screen */
-  .setup-wrap { padding: 24px; }
-  .setup-wrap h2 { font-size: 24px; margin-bottom: 6px; }
-  .setup-wrap p { font-size: 13px; color: #888; margin-bottom: 20px; }
-  .field-group { margin-bottom: 16px; text-align: left; }
-  .field-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
-
-  /* 3. Main Dating Feed */
-  .header { height: 56px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .header-title { font-size: 20px; font-weight: 800; background: linear-gradient(45deg, #ff416c, #ff4b4b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .trial-pill { background: rgba(255, 193, 7, 0.15); border: 1px solid #ffc107; color: #ffc107; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; cursor: pointer; }
+  /* Top Navigation & Wallet Bar */
+  .top-bar { height: 56px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; background: #fff; border-bottom: 1px solid #eee; z-index: 10; }
+  .dark .top-bar { background: #111419; border-bottom: 1px solid #222; }
+  .logo-text { font-size: 22px; font-weight: 900; background: linear-gradient(45deg, #fd297b, #ff655b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   
-  .card-area { flex: 1; position: relative; margin: 12px; }
-  .swipe-card { position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 16px; overflow: hidden; background: #20212b; transition: transform 0.25s, opacity 0.25s; }
-  .swipe-card img { width: 100%; height: 380px; object-fit: cover; }
-  .card-info { padding: 14px 16px; }
-  .card-title { font-size: 22px; font-weight: 800; }
-  .card-loc { font-size: 13px; color: #aaa; margin-top: 3px; }
-  .card-bio { font-size: 14px; margin-top: 8px; color: #eee; line-height: 1.4; }
+  .wallet-pill { display: flex; align-items: center; gap: 6px; background: #fff4d9; border: 1.5px solid #ffb800; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 800; color: #d48806; cursor: pointer; }
+  .vip-badge { background: linear-gradient(45deg, #ffb800, #ff8c00); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; border: none; }
 
-  .actions-row { height: 75px; display: flex; justify-content: space-evenly; align-items: center; padding-bottom: 8px; }
-  .circle-btn { width: 56px; height: 56px; border-radius: 50%; border: none; font-size: 22px; cursor: pointer; }
-  .btn-cross { background: #20212b; color: #ff4757; }
-  .btn-like { background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; }
+  /* 1. Login View */
+  .splash-view { background: linear-gradient(180deg, #fd297b 0%, #ff5864 50%, #ff655b 100%); color: #fff; padding: 40px 24px; justify-content: space-between; align-items: center; text-align: center; }
+  .tinder-logo { font-size: 46px; font-weight: 900; letter-spacing: -1px; margin-top: 140px; }
+  .auth-btns { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .auth-btn { width: 100%; padding: 15px; border-radius: 30px; border: none; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; background: #fff; color: #222; }
 
-  /* Paywall */
-  .paywall-screen { padding: 30px 20px; justify-content: space-between; text-align: center; background: radial-gradient(circle at top, #30131e 0%, #14151b 80%); }
-  .plan-box { background: #20212b; border: 2px solid #ff416c; padding: 18px; border-radius: 16px; margin: 12px 0; text-align: left; position: relative; }
+  /* 2. OTP View */
+  .otp-view { padding: 24px; background: #fff; color: #111; }
+  .back-arrow { font-size: 26px; cursor: pointer; margin-bottom: 20px; width: 30px; }
+  .otp-boxes { display: flex; justify-content: space-between; margin: 30px 0; }
+  .otp-boxes input { width: 42px; height: 50px; border: none; border-bottom: 2px solid #ccc; text-align: center; font-size: 24px; font-weight: 700; outline: none; }
+  .otp-boxes input:focus { border-bottom-color: #fe3c72; }
+  .btn-primary { width: 100%; padding: 16px; border-radius: 30px; border: none; background: linear-gradient(45deg, #fd297b, #ff655b); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 15px; }
+
+  /* 3. Bottom Navigation */
+  .bottom-nav { height: 54px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; z-index: 10; }
+  .dark .bottom-nav { background: #111419; border-top: 1px solid #222; }
+  .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #7c8591; font-weight: 700; cursor: pointer; gap: 3px; }
+  .nav-item.active { color: #fe3c72; }
+  .nav-icon { font-size: 20px; }
+
+  /* 4. Swipe Screen */
+  .swipe-area { flex: 1; position: relative; background: #000; overflow: hidden; }
+  .profile-card { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-radius: 12px; margin: 6px; }
+  .top-banner { background: #fff; color: #111; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; align-self: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+  .card-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%); border-radius: 12px; }
+  .card-content { position: relative; z-index: 2; color: #fff; margin-bottom: 75px; }
+  .tag-pill { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; margin-right: 6px; margin-top: 6px; display: inline-block; }
+  .swipe-btns { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 30px; z-index: 5; }
+  .s-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .s-pass { background: #21262e; color: #fd297b; }
+  .s-like { background: #fe3c72; color: #fff; }
+
+  /* 5. Chat Screen */
+  .chat-wrap { padding: 16px; overflow-y: auto; flex: 1; background: #fff; }
+  .match-bubbles { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 5px; }
+  .match-avatar { width: 70px; height: 95px; border-radius: 12px; background-size: cover; background-position: center; flex-shrink: 0; }
+  .chat-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f0f2f5; cursor: pointer; }
+  .chat-row img { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; }
+
+  /* 6. Active Chat Room Window */
+  .chat-room { display: flex; flex-direction: column; height: 100%; background: #f4f6f8; }
+  .chat-header { height: 56px; background: #fff; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
+  .chat-msgs { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 14px; }
+  .msg-in { background: #fff; color: #222; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .msg-out { background: linear-gradient(45deg, #fd297b, #ff5864); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .chat-input-bar { height: 60px; background: #fff; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #eee; }
+  .chat-input-bar input { flex: 1; height: 42px; border-radius: 25px; border: 1px solid #e0e0e0; background: #f8f9fa; padding: 0 16px; outline: none; font-size: 14px; }
+  .send-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: #fe3c72; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  /* 7. Coin Store & Subscription Modal */
+  .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; justify-content: center; align-items: flex-end; }
+  .modal-overlay.active { display: flex; }
+  .modal-sheet { width: 100%; background: #fff; border-radius: 24px 24px 0 0; padding: 24px; color: #111; max-height: 85%; overflow-y: auto; animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  
+  .store-card { background: #f8f9fa; border: 1.5px solid #e9ecef; border-radius: 16px; padding: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .store-card.highlight { background: #fff9ea; border-color: #ffc107; }
+  .ad-reward-btn { width: 100%; background: #2ed573; color: #fff; padding: 15px; border-radius: 30px; border: none; font-weight: 800; font-size: 15px; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(46,213,115,0.3); }
+
+  /* 8. Ad Overlay Simulator */
+  .ad-simulator { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; flex-direction: column; justify-content: center; align-items: center; color: #fff; text-align: center; }
+  .ad-simulator.active { display: flex; }
 </style>
 </head>
 <body>
 
 <div class="app-container">
-  <!-- Screen 1: Mobile Login -->
-  <div class="screen auth-wrap active" id="screenLogin">
-    <div>
-      <div class="brand-logo">🔥 Twogether</div>
-      <p style="color: #aaa; margin-top: 8px; font-size: 14px;">100% Real Matches • Free 7 Days Trial</p>
-    </div>
-    <div class="auth-form">
-      <input type="tel" id="mobileInput" class="input-box" placeholder="Enter Mobile Number (+91...)">
-      <button class="btn-main" onclick="sendOtp()">Continue with Mobile</button>
-    </div>
-    <p style="font-size: 11px; color: #666;">By continuing, you agree to our Terms and 100% Real ID policy.</p>
-  </div>
 
-  <!-- Screen 2: OTP Screen -->
-  <div class="screen auth-wrap" id="screenOtp">
-    <div class="brand-logo">Enter OTP</div>
-    <div class="auth-form">
-      <p style="font-size: 14px; color: #bbb;">We sent a 4-digit code to your number</p>
-      <input type="number" id="otpInput" class="input-box" placeholder="1234" style="letter-spacing: 6px; font-size: 22px;">
-      <button class="btn-main" onclick="verifyOtp()">Verify OTP</button>
-      <button class="btn-main btn-sub" onclick="navTo('screenLogin')">Change Number</button>
-    </div>
-    <div></div>
-  </div>
-
-  <!-- Screen 3: User Setup -->
-  <div class="screen setup-wrap" id="screenSetup">
-    <h2>Create Your Profile</h2>
-    <p>Real profiles get 5x more matches</p>
-    <div class="field-group">
-      <label>Full Name</label>
-      <input type="text" id="profName" class="input-box" style="text-align:left;" placeholder="e.g. Rahul Rai">
-    </div>
-    <div class="field-group">
-      <label>Age</label>
-      <input type="number" id="profAge" class="input-box" style="text-align:left;" placeholder="24">
-    </div>
-    <div class="field-group">
-      <label>I Am</label>
-      <select id="profGender" class="input-box" style="background:#20212b; text-align:left;">
-        <option>Man</option>
-        <option>Woman</option>
-      </select>
-    </div>
-    <div class="field-group">
-      <label>City</label>
-      <input type="text" id="profCity" class="input-box" style="text-align:left;" value="Pune">
-    </div>
-    <button class="btn-main" onclick="saveProfileAndStart()">Start 7-Day Free Trial</button>
-  </div>
-
-  <!-- Screen 4: Main Feed -->
-  <div class="screen" id="screenMain">
-    <div class="header">
-      <span class="header-title">🔥 Twogether</span>
-      <span class="trial-pill" onclick="navTo('screenPaywall')">⏳ 7 Days Free</span>
-      <span style="font-size: 20px; cursor:pointer;" onclick="navTo('screenSetup')">👤</span>
-    </div>
-    <div class="card-area" id="cardsStack"></div>
-    <div class="actions-row">
-      <button class="circle-btn btn-cross" onclick="swipe('left')">✕</button>
-      <button class="circle-btn btn-like" onclick="swipe('right')">❤</button>
+  <!-- 1. Splash / Login View -->
+  <div class="view splash-view active" id="viewSplash">
+    <div class="tinder-logo">🔥 Twogether</div>
+    <div class="auth-btns">
+      <p style="font-size: 11px; margin-bottom: 8px; opacity: 0.9;">Sign in to connect with 100% verified real users.</p>
+      <button class="auth-btn" onclick="openLogin()"><span>📞</span> Continue with Phone Number</button>
+      <button class="auth-btn" onclick="openLogin()"><span>🌐</span> Continue with Google</button>
     </div>
   </div>
 
-  <!-- Screen 5: Paywall / Subscription -->
-  <div class="screen paywall-screen" id="screenPaywall">
-    <div>
-      <h2 style="font-size: 26px; font-weight: 800; margin-top: 20px;">Twogether Premium 💎</h2>
-      <p style="color: #aaa; font-size: 13px; margin-top: 6px;">7 Days Trial Active. Upgrade for unlimited benefits.</p>
+  <!-- 2. OTP View -->
+  <div class="view otp-view" id="viewOtp">
+    <div class="back-arrow" onclick="switchView('viewSplash')">←</div>
+    <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Enter Verification Code</h1>
+    <p style="color: #666; font-size: 14px;">Enter 4-digit demo code (1234)</p>
+    <div class="otp-boxes">
+      <input type="tel" maxlength="1" oninput="moveNext(this)" value="1">
+      <input type="tel" maxlength="1" oninput="moveNext(this)" value="2">
+      <input type="tel" maxlength="1" oninput="moveNext(this)" value="3">
+      <input type="tel" maxlength="1" oninput="moveNext(this)" value="4">
     </div>
-    <div>
-      <div class="plan-box">
-        <div style="font-size: 18px; font-weight: 800;">1 Month Full Access</div>
-        <div style="font-size: 13px; color: #bbb; margin: 4px 0;">Unlimited Swipes + Real Chat + Verified ID</div>
-        <div style="font-size: 22px; font-weight: 900; color: #ff416c;">₹199 / month</div>
+    <button class="btn-primary" onclick="loginSuccess()">Verify & Start</button>
+  </div>
+
+  <!-- 3. Swipe View -->
+  <div class="view dark" id="viewSwipe">
+    <div class="top-bar">
+      <div class="logo-text">🔥 Twogether</div>
+      <div class="wallet-pill" onclick="openStoreModal()">
+        <span>🪙</span> <span id="coinCountHeader">50</span> Coins
       </div>
     </div>
-    <div>
-      <button class="btn-main" onclick="alert('Razorpay/UPI Payment Gateway Initialized!')">Pay ₹199</button>
-      <p style="font-size: 12px; color: #777; margin-top: 12px; cursor:pointer;" onclick="navTo('screenMain')">← Back to Swiping</p>
+    <div class="swipe-area" id="swipeCardArea"></div>
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="switchTab('viewSwipe')"><span class="nav-icon">🔥</span>Swipe</div>
+      <div class="nav-item" onclick="switchTab('viewExplore')"><span class="nav-icon">🧭</span>Explore</div>
+      <div class="nav-item" onclick="switchTab('viewChat')"><span class="nav-icon">💬</span>Chat</div>
+      <div class="nav-item" onclick="switchTab('viewProfile')"><span class="nav-icon">👤</span>Profile</div>
     </div>
   </div>
+
+  <!-- 4. Explore View -->
+  <div class="view" id="viewExplore">
+    <div class="top-bar">
+      <h2 style="font-size: 22px; font-weight: 900;">Explore</h2>
+      <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountExp">50</span></div>
+    </div>
+    <div style="padding: 16px; overflow-y: auto; flex: 1;">
+      <div style="background: linear-gradient(135deg, #fd297b, #ff655b); color: #fff; padding: 18px; border-radius: 16px; margin-bottom: 16px; cursor: pointer;" onclick="openStoreModal()">
+        <h3 style="font-size: 18px; font-weight: 800;">Get Tinder Gold 💎</h3>
+        <p style="font-size: 12px; margin-top: 4px; opacity: 0.9;">Unlimited Chats without spending coins + See who liked you!</p>
+      </div>
+      <h3 style="font-size: 16px; margin-bottom: 10px;">Popular Categories</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">📺 Binge Watchers</div>
+        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">🌹 Serious Dating</div>
+        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">☕ Coffee Dates</div>
+        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">🌙 Free Tonight</div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="switchTab('viewSwipe')"><span class="nav-icon">🔥</span>Swipe</div>
+      <div class="nav-item active" onclick="switchTab('viewExplore')"><span class="nav-icon">🧭</span>Explore</div>
+      <div class="nav-item" onclick="switchTab('viewChat')"><span class="nav-icon">💬</span>Chat</div>
+      <div class="nav-item" onclick="switchTab('viewProfile')"><span class="nav-icon">👤</span>Profile</div>
+    </div>
+  </div>
+
+  <!-- 5. Chat List View -->
+  <div class="view" id="viewChat">
+    <div class="top-bar">
+      <h2 style="font-size: 22px; font-weight: 900;">Matches & Chat</h2>
+      <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountChat">50</span></div>
+    </div>
+    <div class="chat-wrap">
+      <div style="font-size: 13px; font-weight: 800; color: #777; margin-bottom: 8px;">NEW MATCHES</div>
+      <div class="match-bubbles">
+        <div class="match-avatar" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200');" onclick="openChatRoom('Sabina Shaikh', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200')"></div>
+        <div class="match-avatar" style="background-image: url('https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200');" onclick="openChatRoom('Aanya Sharma', 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200')"></div>
+      </div>
+      
+      <div style="font-size: 13px; font-weight: 800; color: #777; margin-bottom: 8px;">CONVERSATIONS (5 Coins / Msg)</div>
+      <div class="chat-row" onclick="openChatRoom('Sabina Shaikh', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200')">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" alt="">
+        <div style="flex:1;">
+          <div style="font-weight: 800; font-size: 15px;">Sabina Shaikh ✔</div>
+          <div style="font-size: 13px; color: #777;">Hey! How are you doing?</div>
+        </div>
+      </div>
+      <div class="chat-row" onclick="openChatRoom('Aanya Sharma', 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200')">
+        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200" alt="">
+        <div style="flex:1;">
+          <div style="font-weight: 800; font-size: 15px;">Aanya Sharma ✔</div>
+          <div style="font-size: 13px; color: #777;">Let's grab coffee this weekend! ☕</div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="switchTab('viewSwipe')"><span class="nav-icon">🔥</span>Swipe</div>
+      <div class="nav-item" onclick="switchTab('viewExplore')"><span class="nav-icon">🧭</span>Explore</div>
+      <div class="nav-item active" onclick="switchTab('viewChat')"><span class="nav-icon">💬</span>Chat</div>
+      <div class="nav-item" onclick="switchTab('viewProfile')"><span class="nav-icon">👤</span>Profile</div>
+    </div>
+  </div>
+
+  <!-- 6. Active Chat Room -->
+  <div class="view" id="viewChatRoom">
+    <div class="chat-room">
+      <div class="chat-header">
+        <div style="display:flex; align-items:center; gap: 10px;">
+          <span style="font-size: 22px; cursor:pointer;" onclick="switchTab('viewChat')">←</span>
+          <img id="chatRoomAvatar" src="" style="width: 38px; height: 38px; border-radius: 50%; object-fit:cover;">
+          <b id="chatRoomName">Partner</b>
+        </div>
+        <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountRoom">50</span></div>
+      </div>
+      <div class="chat-msgs" id="chatMsgsBox">
+        <div class="msg-bubble msg-in">Hey! Glad we matched here 😊</div>
+      </div>
+      <div class="chat-input-bar">
+        <input type="text" id="userMsgInput" placeholder="Type a message (Costs 5 Coins)..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+        <button class="send-btn" onclick="sendChatMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Profile View -->
+  <div class="view" id="viewProfile">
+    <div class="top-bar">
+      <h2 style="font-size: 22px; font-weight: 900;">My Profile</h2>
+      <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountProf">50</span></div>
+    </div>
+    <div style="padding: 24px 16px; text-align: center; overflow-y: auto; flex: 1;">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #fe3c72; margin-bottom: 10px;">
+      <h2 style="font-size: 20px; font-weight: 800;">Rahul Rai <span style="color:#2ed573;">✔</span></h2>
+      <p style="color: #777; font-size: 13px;">Pune, India</p>
+
+      <div style="background:#fff4d9; border: 1.5px solid #ffc107; border-radius: 16px; padding: 16px; margin: 20px 0; text-align: left;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <b>🪙 Coin Balance</b>
+          <span style="font-size: 20px; font-weight: 900; color: #d48806;" id="profileCoinVal">50 Coins</span>
+        </div>
+        <button class="ad-reward-btn" onclick="watchRewardedAd()">▶ Watch Video & Get +10 Coins Free</button>
+      </div>
+
+      <button class="btn-primary" style="margin-top: 0;" onclick="openStoreModal()">💎 Buy Coins or VIP Membership</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="switchTab('viewSwipe')"><span class="nav-icon">🔥</span>Swipe</div>
+      <div class="nav-item" onclick="switchTab('viewExplore')"><span class="nav-icon">🧭</span>Explore</div>
+      <div class="nav-item" onclick="switchTab('viewChat')"><span class="nav-icon">💬</span>Chat</div>
+      <div class="nav-item active" onclick="switchTab('viewProfile')"><span class="nav-icon">👤</span>Profile</div>
+    </div>
+  </div>
+
+  <!-- Store & Coin Purchase Modal -->
+  <div class="modal-overlay" id="storeModal">
+    <div class="modal-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+        <h2 style="font-size: 20px; font-weight: 900;">Coins & VIP Plans</h2>
+        <span style="font-size: 24px; cursor: pointer;" onclick="closeStoreModal()">✕</span>
+      </div>
+
+      <!-- Option 1: Watch Ad -->
+      <button class="ad-reward-btn" style="margin-bottom: 18px;" onclick="watchRewardedAd()">
+        <span>📺</span> Watch Video Ad (+10 Coins Free)
+      </button>
+
+      <!-- Option 2: Buy Coins -->
+      <div style="font-size: 13px; font-weight: 800; color: #666; margin-bottom: 8px;">BUY COIN PACKS (UPI / Cards)</div>
+      <div class="store-card" onclick="buyCoinsWithRazorpay(100, 49)">
+        <div>
+          <div style="font-weight: 800; font-size: 15px;">🪙 100 Coins</div>
+          <div style="font-size: 12px; color: #777;">Send ~20 Chat messages</div>
+        </div>
+        <button style="background:#fe3c72; color:#fff; border:none; padding:8px 16px; border-radius:20px; font-weight:700;">₹49</button>
+      </div>
+
+      <div class="store-card highlight" onclick="buyCoinsWithRazorpay(500, 199)">
+        <div>
+          <div style="font-weight: 800; font-size: 15px;">🪙 500 Coins (Popular)</div>
+          <div style="font-size: 12px; color: #777;">Send ~100 Chat messages</div>
+        </div>
+        <button style="background:#ffb800; color:#111; border:none; padding:8px 16px; border-radius:20px; font-weight:800;">₹199</button>
+      </div>
+
+      <!-- Option 3: VIP Subscription -->
+      <div style="font-size: 13px; font-weight: 800; color: #666; margin: 16px 0 8px;">UNLIMITED VIP MEMBERSHIP</div>
+      <div class="store-card" style="background: linear-gradient(135deg, #2b1122, #14151b); color:#fff; border: 1.5px solid #fe3c72;" onclick="buySubscriptionRazorpay(399)">
+        <div>
+          <div style="font-weight: 800; font-size: 16px; color: #ff758c;">👑 1 Month VIP Pass</div>
+          <div style="font-size: 12px; color: #ccc;">Unlimited Free Chats (No Coins Needed!)</div>
+        </div>
+        <button style="background:linear-gradient(45deg, #fd297b, #ff655b); color:#fff; border:none; padding:8px 16px; border-radius:20px; font-weight:700;">₹399</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AdMob Video Simulator Screen -->
+  <div class="ad-simulator" id="adSim">
+    <div style="font-size: 50px; margin-bottom: 20px;">📺</div>
+    <h2>Google AdMob Video Playing...</h2>
+    <p style="color: #aaa; margin: 12px 0 25px;">Please wait <span id="adTimer">5</span> seconds to earn 10 Coins</p>
+    <div style="width: 200px; height: 6px; background: #333; border-radius: 3px; overflow: hidden;">
+      <div id="adProgress" style="width: 0%; height: 100%; background: #2ed573; transition: width 1s linear;"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-let currentCardIdx = 0;
-const profilesData = [
+let userCoins = 50; // Welcome Bonus
+let isVipUser = false;
+let currentProfileIdx = 0;
+
+const profileList = [
   {
-    name: "Riya Sharma",
+    name: "Sabina Shaikh",
+    age: 22,
+    city: "Pune",
+    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600",
+    tags: ["Biryani", "Music", "Dancing", "Nightlife"]
+  },
+  {
+    name: "Aanya Sharma",
     age: 23,
-    city: "Koregaon Park, Pune",
-    bio: "Cafe lover, weekend traveler & foodie. Let's grab cold coffee! ☕",
-    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600"
-  },
-  {
-    name: "Aanya Verma",
-    age: 24,
-    city: "Viman Nagar, Pune",
-    bio: "Looking for genuine connection & real conversations. ✨",
-    img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600"
-  },
-  {
-    name: "Simran Kaur",
-    age: 25,
-    city: "Baner, Pune",
-    bio: "Music lover and street food explorer 🍕",
-    img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600"
+    city: "Pune",
+    img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600",
+    tags: ["Coffee", "Travel", "Indie Music", "Photography"]
   }
 ];
 
-function navTo(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(screenId).classList.add('active');
+function updateCoinDisplays() {
+  document.getElementById('coinCountHeader').innerText = userCoins;
+  document.getElementById('coinCountExp').innerText = userCoins;
+  document.getElementById('coinCountChat').innerText = userCoins;
+  document.getElementById('coinCountRoom').innerText = userCoins;
+  document.getElementById('coinCountProf').innerText = userCoins;
+  document.getElementById('profileCoinVal').innerText = isVipUser ? "VIP Active (Unlimited)" : userCoins + " Coins";
 }
 
-function sendOtp() {
-  const phone = document.getElementById('mobileInput').value.trim();
-  if (phone.length < 10) {
-    alert("Please enter a valid 10-digit mobile number");
-    return;
-  }
-  navTo('screenOtp');
+function switchView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-function verifyOtp() {
-  const otp = document.getElementById('otpInput').value.trim();
-  if (!otp) {
-    alert("Please enter OTP (Demo: 1234)");
-    return;
-  }
-  navTo('screenSetup');
+function switchTab(id) {
+  switchView(id);
+  if(id === 'viewSwipe') renderCard();
+  updateCoinDisplays();
 }
 
-function saveProfileAndStart() {
-  const name = document.getElementById('profName').value.trim();
-  if (!name) {
-    alert("Please enter your name");
-    return;
-  }
-  navTo('screenMain');
-  loadCard();
-}
+function openLogin() { switchView('viewOtp'); }
+function moveNext(el) { if(el.value.length === 1 && el.nextElementSibling) el.nextElementSibling.focus(); }
+function loginSuccess() { switchTab('viewSwipe'); }
 
-function loadCard() {
-  const stack = document.getElementById('cardsStack');
-  stack.innerHTML = '';
-  if (currentCardIdx >= profilesData.length) {
-    stack.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;text-align:center;padding:20px;">No more profiles nearby right now! Check back later.</div>';
+function renderCard() {
+  const area = document.getElementById('swipeCardArea');
+  area.innerHTML = '';
+  if (currentProfileIdx >= profileList.length) {
+    area.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;text-align:center;padding:20px;">No more profiles nearby right now!</div>';
     return;
   }
-  const p = profilesData[currentCardIdx];
+  const p = profileList[currentProfileIdx];
   const card = document.createElement('div');
-  card.className = 'swipe-card';
+  card.className = 'profile-card';
+  card.style.backgroundImage = `url('${p.img}')`;
   card.innerHTML = `
-    <img src="${p.img}">
-    <div class="card-info">
-      <div class="card-title">${p.name}, ${p.age} <span style="color:#2ed573;font-size:14px;">✔ Real ID</span></div>
-      <div class="card-loc">📍 ${p.city}</div>
-      <div class="card-bio">${p.bio}</div>
+    <div class="top-banner">💖 Verified Real User</div>
+    <div class="card-gradient"></div>
+    <div class="card-content">
+      <h1 style="font-size: 28px; font-weight:800;">${p.name} ${p.age} <span style="font-size:20px;">✔</span></h1>
+      <div style="font-size: 13px; margin: 4px 0 10px;">👥 Interests</div>
+      <div>${p.tags.map(t => `<span class="tag-pill">${t}</span>`).join('')}</div>
+    </div>
+    <div class="swipe-btns">
+      <button class="s-btn s-pass" onclick="actionSwipe('left')">✕</button>
+      <button class="s-btn s-like" onclick="actionSwipe('right')">❤</button>
     </div>
   `;
-  stack.appendChild(card);
+  area.appendChild(card);
 }
 
-function swipe(dir) {
-  const card = document.querySelector('.swipe-card');
+function actionSwipe(dir) {
+  const card = document.querySelector('.profile-card');
   if (!card) return;
+  card.style.transition = '0.3s ease';
   card.style.transform = dir === 'left' ? 'translateX(-120%) rotate(-15deg)' : 'translateX(120%) rotate(15deg)';
   card.style.opacity = '0';
   setTimeout(() => {
-    currentCardIdx++;
-    loadCard();
-  }, 250);
+    currentProfileIdx++;
+    renderCard();
+  }, 300);
 }
+
+function openChatRoom(name, img) {
+  document.getElementById('chatRoomName').innerText = name;
+  document.getElementById('chatRoomAvatar').src = img;
+  switchView('viewChatRoom');
+  updateCoinDisplays();
+}
+
+function sendChatMessage() {
+  const inp = document.getElementById('userMsgInput');
+  const txt = inp.value.trim();
+  if (!txt) return;
+
+  // Check Coins / VIP
+  if (!isVipUser && userCoins < 5) {
+    alert("Coin Balance Low! Watch a video ad or buy coins to continue chatting.");
+    openStoreModal();
+    return;
+  }
+
+  // Deduct Coins if not VIP
+  if (!isVipUser) {
+    userCoins -= 5;
+    updateCoinDisplays();
+  }
+
+  const box = document.getElementById('chatMsgsBox');
+  const msgEl = document.createElement('div');
+  msgEl.className = 'msg-bubble msg-out';
+  msgEl.innerText = txt;
+  box.appendChild(msgEl);
+  inp.value = '';
+  box.scrollTop = box.scrollHeight;
+
+  // Realistic instant reply
+  setTimeout(() => {
+    const replyEl = document.createElement('div');
+    replyEl.className = 'msg-bubble msg-in';
+    replyEl.innerText = "That sounds lovely! Tell me more 😊";
+    box.appendChild(replyEl);
+    box.scrollTop = box.scrollHeight;
+  }, 1200);
+}
+
+/* Modals & Stores */
+function openStoreModal() { document.getElementById('storeModal').classList.add('active'); }
+function closeStoreModal() { document.getElementById('storeModal').classList.remove('active'); }
+
+/* Rewarded Video Ad Watcher */
+function watchRewardedAd() {
+  closeStoreModal();
+  const adScreen = document.getElementById('adSim');
+  adScreen.classList.add('active');
+  let timeLeft = 5;
+  document.getElementById('adTimer').innerText = timeLeft;
+  document.getElementById('adProgress').style.width = '0%';
+
+  const timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById('adTimer').innerText = timeLeft;
+    document.getElementById('adProgress').style.width = ((5 - timeLeft) * 20) + '%';
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      adScreen.classList.remove('active');
+      userCoins += 10;
+      updateCoinDisplays();
+      alert("🎉 You earned +10 Free Coins for watching video ad!");
+    }
+  }, 1000);
+}
+
+/* Razorpay Payment Integration */
+function buyCoinsWithRazorpay(coins, amountInINR) {
+  const options = {
+    key: "rzp_test_YOUR_KEY_HERE", // Replace with your Live/Test Razorpay Key ID
+    amount: amountInINR * 100, // paise
+    currency: "INR",
+    name: "Twogether Dating",
+    description: `Purchase ${coins} Chat Coins`,
+    handler: function(response) {
+      userCoins += coins;
+      updateCoinDisplays();
+      closeStoreModal();
+      alert(`Payment Successful! +${coins} coins added to your wallet.`);
+    },
+    theme: { color: "#fd297b" }
+  };
+  
+  if (window.Razorpay) {
+    const rzp = new Razorpay(options);
+    rzp.open();
+  } else {
+    // Fallback Simulator if testing offline
+    if (confirm(`Simulate UPI Payment of ₹${amountInINR} for ${coins} Coins?`)) {
+      userCoins += coins;
+      updateCoinDisplays();
+      closeStoreModal();
+      alert(`🎉 Payment of ₹${amountInINR} Successful! Added ${coins} Coins.`);
+    }
+  }
+}
+
+function buySubscriptionRazorpay(amountInINR) {
+  const options = {
+    key: "rzp_test_YOUR_KEY_HERE",
+    amount: amountInINR * 100,
+    currency: "INR",
+    name: "Twogether VIP Pass",
+    description: "1 Month Unlimited VIP Dating Pass",
+    handler: function(response) {
+      isVipUser = true;
+      updateCoinDisplays();
+      closeStoreModal();
+      alert("👑 Congratulations! You are now a VIP Member. Enjoy Unlimited Free Chats!");
+    },
+    theme: { color: "#ffb800" }
+  };
+  
+  if (window.Razorpay) {
+    const rzp = new Razorpay(options);
+    rzp.open();
+  } else {
+    if (confirm(`Simulate VIP Pass Purchase of ₹${amountInINR}?`)) {
+      isVipUser = true;
+      updateCoinDisplays();
+      closeStoreModal();
+      alert("👑 VIP Subscription Activated! Unlimited Chats Unlocked.");
+    }
+  }
+}
+
+updateCoinDisplays();
 </script>
 </body>
 </html>
