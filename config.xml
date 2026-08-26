@@ -1,12 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.rahul.twogether.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.twogether.datingapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Twogether</name>
-    <description>Find Your Perfect Match</description>
-    <author email="support@twogether.app">Rahul</author>
+    <description>Twogether Dating App</description>
+    <author email="dev@twogether.com" href="https://twogether.com">Twogether Team</author>
     <content src="index.html" />
+    <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
     <preference name="Orientation" value="portrait" />
-    <plugin name="cordova-plugin-geolocation" spec="^4.1.0" />
     <preference name="android-targetSdkVersion" value="33" />
 </widget>
