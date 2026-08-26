@@ -3,157 +3,231 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Twogether - 100% Real Matches</title>
+<title>Twogether Dating</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { background: #0f1015; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-  .app-container { width: 100%; max-width: 420px; height: 100%; max-height: 850px; position: relative; background: #181920; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
-  .screen { display: none; width: 100%; height: 100%; flex-direction: column; position: absolute; top: 0; left: 0; background: #181920; }
+  .app-container { width: 100%; max-width: 420px; height: 100%; max-height: 850px; position: relative; background: #14151b; overflow: hidden; display: flex; flex-direction: column; }
+  
+  .screen { display: none; width: 100%; height: 100%; flex-direction: column; position: absolute; top: 0; left: 0; background: #14151b; overflow-y: auto; }
   .screen.active { display: flex; }
 
-  /* Top Bar */
+  /* 1. Login & OTP Screens */
+  .auth-wrap { padding: 30px 24px; justify-content: space-between; align-items: center; text-align: center; background: radial-gradient(circle at top, #2b1122 0%, #14151b 70%); }
+  .brand-logo { font-size: 38px; font-weight: 900; background: linear-gradient(45deg, #ff416c, #ff4b4b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 40px; }
+  .auth-form { width: 100%; display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+  .input-box { width: 100%; padding: 15px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.07); color: #fff; font-size: 16px; outline: none; text-align: center; }
+  .btn-main { width: 100%; padding: 15px; border-radius: 30px; border: none; background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,65,108,0.4); }
+  .btn-sub { background: transparent; border: 1px solid rgba(255,255,255,0.2); box-shadow: none; }
+
+  /* 2. Setup Screen */
+  .setup-wrap { padding: 24px; }
+  .setup-wrap h2 { font-size: 24px; margin-bottom: 6px; }
+  .setup-wrap p { font-size: 13px; color: #888; margin-bottom: 20px; }
+  .field-group { margin-bottom: 16px; text-align: left; }
+  .field-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
+
+  /* 3. Main Dating Feed */
   .header { height: 56px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .header-brand { font-size: 20px; font-weight: 800; background: linear-gradient(45deg, #ff416c, #ff4b4b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .trial-badge { background: rgba(255, 193, 7, 0.15); border: 1px solid #ffc107; color: #ffc107; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 12px; cursor: pointer; }
+  .header-title { font-size: 20px; font-weight: 800; background: linear-gradient(45deg, #ff416c, #ff4b4b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .trial-pill { background: rgba(255, 193, 7, 0.15); border: 1px solid #ffc107; color: #ffc107; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; cursor: pointer; }
+  
+  .card-area { flex: 1; position: relative; margin: 12px; }
+  .swipe-card { position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 16px; overflow: hidden; background: #20212b; transition: transform 0.25s, opacity 0.25s; }
+  .swipe-card img { width: 100%; height: 380px; object-fit: cover; }
+  .card-info { padding: 14px 16px; }
+  .card-title { font-size: 22px; font-weight: 800; }
+  .card-loc { font-size: 13px; color: #aaa; margin-top: 3px; }
+  .card-bio { font-size: 14px; margin-top: 8px; color: #eee; line-height: 1.4; }
 
-  /* Card View */
-  .card-stack { flex: 1; position: relative; margin: 12px; }
-  .card { position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 16px; overflow-y: auto; background: #23242f; transition: transform 0.25s, opacity 0.25s; }
-  .card img { width: 100%; height: 380px; object-fit: cover; display: block; }
-  .card-details { padding: 16px; }
-  .verified-badge { color: #2ed573; font-size: 14px; margin-left: 5px; }
-  .name-age { font-size: 22px; font-weight: 700; }
-  .location { font-size: 13px; color: #aaa; margin-top: 3px; }
-  .bio { font-size: 14px; margin-top: 10px; line-height: 1.4; color: #ddd; }
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-  .tag { background: rgba(255,255,255,0.08); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: #ff758c; }
+  .actions-row { height: 75px; display: flex; justify-content: space-evenly; align-items: center; padding-bottom: 8px; }
+  .circle-btn { width: 56px; height: 56px; border-radius: 50%; border: none; font-size: 22px; cursor: pointer; }
+  .btn-cross { background: #20212b; color: #ff4757; }
+  .btn-like { background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; }
 
-  /* Buttons */
-  .actions { height: 75px; display: flex; justify-content: space-evenly; align-items: center; padding-bottom: 8px; }
-  .action-btn { width: 54px; height: 54px; border-radius: 50%; border: none; font-size: 22px; cursor: pointer; }
-  .btn-pass { background: #23242f; color: #ff4757; }
-  .btn-heart { background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; }
-  .btn-primary { width: 100%; padding: 14px; border-radius: 30px; border: none; background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; }
-
-  /* Paywall Screen */
-  .paywall-bg { background: linear-gradient(135deg, #181920 0%, #30131e 100%); padding: 30px 20px; justify-content: space-between; text-align: center; }
-  .plan-card { background: #23242f; border: 2px solid #ff416c; padding: 16px; border-radius: 16px; margin: 12px 0; text-align: left; position: relative; }
-  .plan-popular { position: absolute; top: -10px; right: 15px; background: #ff416c; color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 10px; }
-
-  /* Modal */
-  .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,16,21,0.96); z-index: 99; flex-direction: column; }
-  .modal.active { display: flex; }
+  /* Paywall */
+  .paywall-screen { padding: 30px 20px; justify-content: space-between; text-align: center; background: radial-gradient(circle at top, #30131e 0%, #14151b 80%); }
+  .plan-box { background: #20212b; border: 2px solid #ff416c; padding: 18px; border-radius: 16px; margin: 12px 0; text-align: left; position: relative; }
 </style>
 </head>
 <body>
 
 <div class="app-container">
-  <!-- Feed Screen -->
-  <div class="screen active" id="screenMain">
-    <div class="header">
-      <span class="header-brand">🔥 Twogether</span>
-      <span class="trial-badge" onclick="showPaywall()">⏳ 7 Days Free Trial</span>
-      <span style="font-size: 20px; cursor:pointer;" onclick="alert('Profile section')">👤</span>
+  <!-- Screen 1: Mobile Login -->
+  <div class="screen auth-wrap active" id="screenLogin">
+    <div>
+      <div class="brand-logo">🔥 Twogether</div>
+      <p style="color: #aaa; margin-top: 8px; font-size: 14px;">100% Real Matches • Free 7 Days Trial</p>
     </div>
-    <div class="card-stack" id="feedCards"></div>
-    <div class="actions">
-      <button class="action-btn btn-pass" onclick="handleSwipe('left')">✕</button>
-      <button class="action-btn btn-heart" onclick="handleSwipe('right')">❤</button>
+    <div class="auth-form">
+      <input type="tel" id="mobileInput" class="input-box" placeholder="Enter Mobile Number (+91...)">
+      <button class="btn-main" onclick="sendOtp()">Continue with Mobile</button>
+    </div>
+    <p style="font-size: 11px; color: #666;">By continuing, you agree to our Terms and 100% Real ID policy.</p>
+  </div>
+
+  <!-- Screen 2: OTP Screen -->
+  <div class="screen auth-wrap" id="screenOtp">
+    <div class="brand-logo">Enter OTP</div>
+    <div class="auth-form">
+      <p style="font-size: 14px; color: #bbb;">We sent a 4-digit code to your number</p>
+      <input type="number" id="otpInput" class="input-box" placeholder="1234" style="letter-spacing: 6px; font-size: 22px;">
+      <button class="btn-main" onclick="verifyOtp()">Verify OTP</button>
+      <button class="btn-main btn-sub" onclick="navTo('screenLogin')">Change Number</button>
+    </div>
+    <div></div>
+  </div>
+
+  <!-- Screen 3: User Setup -->
+  <div class="screen setup-wrap" id="screenSetup">
+    <h2>Create Your Profile</h2>
+    <p>Real profiles get 5x more matches</p>
+    <div class="field-group">
+      <label>Full Name</label>
+      <input type="text" id="profName" class="input-box" style="text-align:left;" placeholder="e.g. Rahul Rai">
+    </div>
+    <div class="field-group">
+      <label>Age</label>
+      <input type="number" id="profAge" class="input-box" style="text-align:left;" placeholder="24">
+    </div>
+    <div class="field-group">
+      <label>I Am</label>
+      <select id="profGender" class="input-box" style="background:#20212b; text-align:left;">
+        <option>Man</option>
+        <option>Woman</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>City</label>
+      <input type="text" id="profCity" class="input-box" style="text-align:left;" value="Pune">
+    </div>
+    <button class="btn-main" onclick="saveProfileAndStart()">Start 7-Day Free Trial</button>
+  </div>
+
+  <!-- Screen 4: Main Feed -->
+  <div class="screen" id="screenMain">
+    <div class="header">
+      <span class="header-title">🔥 Twogether</span>
+      <span class="trial-pill" onclick="navTo('screenPaywall')">⏳ 7 Days Free</span>
+      <span style="font-size: 20px; cursor:pointer;" onclick="navTo('screenSetup')">👤</span>
+    </div>
+    <div class="card-area" id="cardsStack"></div>
+    <div class="actions-row">
+      <button class="circle-btn btn-cross" onclick="swipe('left')">✕</button>
+      <button class="circle-btn btn-like" onclick="swipe('right')">❤</button>
     </div>
   </div>
 
-  <!-- Subscription Paywall (7 Days Expire Screen) -->
-  <div class="screen paywall-bg" id="screenPaywall">
+  <!-- Screen 5: Paywall / Subscription -->
+  <div class="screen paywall-screen" id="screenPaywall">
     <div>
-      <h2 style="font-size: 26px; font-weight: 800; margin-top: 20px;">Unlock Full Access 💎</h2>
-      <p style="color: #aaa; font-size: 13px; margin-top: 6px;">Your 7-day free trial gives unlimited matches.</p>
+      <h2 style="font-size: 26px; font-weight: 800; margin-top: 20px;">Twogether Premium 💎</h2>
+      <p style="color: #aaa; font-size: 13px; margin-top: 6px;">7 Days Trial Active. Upgrade for unlimited benefits.</p>
     </div>
-
     <div>
-      <div class="plan-card">
-        <div class="plan-popular">BEST VALUE</div>
-        <div style="font-size: 18px; font-weight: 700;">1 Month Premium</div>
-        <div style="font-size: 13px; color: #bbb;">Unlimited Swipes + Real Chat + 100% Real ID verified</div>
-        <div style="font-size: 20px; font-weight: 800; color: #ff416c; margin-top: 8px;">₹199 / month</div>
-      </div>
-
-      <div class="plan-card" style="border-color: rgba(255,255,255,0.1);">
-        <div style="font-size: 18px; font-weight: 700;">3 Months Access</div>
-        <div style="font-size: 13px; color: #bbb;">Save 25% on long-term matching</div>
-        <div style="font-size: 20px; font-weight: 800; color: #ff758c; margin-top: 8px;">₹449 only</div>
+      <div class="plan-box">
+        <div style="font-size: 18px; font-weight: 800;">1 Month Full Access</div>
+        <div style="font-size: 13px; color: #bbb; margin: 4px 0;">Unlimited Swipes + Real Chat + Verified ID</div>
+        <div style="font-size: 22px; font-weight: 900; color: #ff416c;">₹199 / month</div>
       </div>
     </div>
-
     <div>
-      <button class="btn-primary" onclick="alert('Razorpay/UPI Payment Gateway connected!')">Continue & Pay</button>
-      <p style="font-size: 11px; color: #666; margin-top: 10px; cursor: pointer;" onclick="document.getElementById('screenPaywall').classList.remove('active'); document.getElementById('screenMain').classList.add('active');">Back to app</p>
+      <button class="btn-main" onclick="alert('Razorpay/UPI Payment Gateway Initialized!')">Pay ₹199</button>
+      <p style="font-size: 12px; color: #777; margin-top: 12px; cursor:pointer;" onclick="navTo('screenMain')">← Back to Swiping</p>
     </div>
   </div>
 </div>
 
 <script>
-let remainingDays = 7;
-let currentIdx = 0;
-
-// Verified real profiles structure (Real users will load from backend database)
-const realUsers = [
+let currentCardIdx = 0;
+const profilesData = [
   {
-    name: "Pooja Hegde",
-    age: 24,
-    city: "Kothrud, Pune",
-    bio: "CA Student. Love long drives & chai. Looking for serious genuine connection. ✨",
-    tags: ["Music", "Reading", "Chai", "Travel"],
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600"
+    name: "Riya Sharma",
+    age: 23,
+    city: "Koregaon Park, Pune",
+    bio: "Cafe lover, weekend traveler & foodie. Let's grab cold coffee! ☕",
+    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600"
   },
   {
-    name: "Rohan Kulkarni",
-    age: 26,
-    city: "Kalyani Nagar, Pune",
-    bio: "Software developer by day, guitarist by night. Let's grab coffee! ☕",
-    tags: ["Tech", "Guitar", "Fitness", "Movies"],
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600"
+    name: "Aanya Verma",
+    age: 24,
+    city: "Viman Nagar, Pune",
+    bio: "Looking for genuine connection & real conversations. ✨",
+    img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600"
+  },
+  {
+    name: "Simran Kaur",
+    age: 25,
+    city: "Baner, Pune",
+    bio: "Music lover and street food explorer 🍕",
+    img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600"
   }
 ];
 
-function renderCard() {
-  const stack = document.getElementById('feedCards');
-  stack.innerHTML = '';
-  if (currentIdx >= realUsers.length) {
-    stack.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;text-align:center;padding:20px;">Finding more 100% verified real users nearby...</div>';
+function navTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+}
+
+function sendOtp() {
+  const phone = document.getElementById('mobileInput').value.trim();
+  if (phone.length < 10) {
+    alert("Please enter a valid 10-digit mobile number");
     return;
   }
-  const u = realUsers[currentIdx];
+  navTo('screenOtp');
+}
+
+function verifyOtp() {
+  const otp = document.getElementById('otpInput').value.trim();
+  if (!otp) {
+    alert("Please enter OTP (Demo: 1234)");
+    return;
+  }
+  navTo('screenSetup');
+}
+
+function saveProfileAndStart() {
+  const name = document.getElementById('profName').value.trim();
+  if (!name) {
+    alert("Please enter your name");
+    return;
+  }
+  navTo('screenMain');
+  loadCard();
+}
+
+function loadCard() {
+  const stack = document.getElementById('cardsStack');
+  stack.innerHTML = '';
+  if (currentCardIdx >= profilesData.length) {
+    stack.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;text-align:center;padding:20px;">No more profiles nearby right now! Check back later.</div>';
+    return;
+  }
+  const p = profilesData[currentCardIdx];
   const card = document.createElement('div');
-  card.className = 'card';
+  card.className = 'swipe-card';
   card.innerHTML = `
-    <img src="${u.image}">
-    <div class="card-details">
-      <div class="name-age">${u.name}, ${u.age} <span class="verified-badge">✔ Verified</span></div>
-      <div class="location">📍 ${u.city}</div>
-      <div class="bio">${u.bio}</div>
-      <div class="tags">${u.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>
+    <img src="${p.img}">
+    <div class="card-info">
+      <div class="card-title">${p.name}, ${p.age} <span style="color:#2ed573;font-size:14px;">✔ Real ID</span></div>
+      <div class="card-loc">📍 ${p.city}</div>
+      <div class="card-bio">${p.bio}</div>
     </div>
   `;
   stack.appendChild(card);
 }
 
-function handleSwipe(dir) {
-  const card = document.querySelector('.card');
+function swipe(dir) {
+  const card = document.querySelector('.swipe-card');
   if (!card) return;
   card.style.transform = dir === 'left' ? 'translateX(-120%) rotate(-15deg)' : 'translateX(120%) rotate(15deg)';
   card.style.opacity = '0';
   setTimeout(() => {
-    currentIdx++;
-    renderCard();
+    currentCardIdx++;
+    loadCard();
   }, 250);
 }
-
-function showPaywall() {
-  document.getElementById('screenMain').classList.remove('active');
-  document.getElementById('screenPaywall').classList.add('active');
-}
-
-renderCard();
 </script>
 </body>
 </html>
