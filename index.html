@@ -38,12 +38,12 @@
   .btn-submit.active-btn { background: linear-gradient(45deg, #fd297b, #ff655b); color: #fff; box-shadow: 0 4px 15px rgba(253,41,123,0.3); }
 
   /* Inputs & Bio */
-  .input-underline { border: none; border-bottom: 2px solid #222; outline: none; font-size: 18px; font-weight: 700; width: 100%; padding: 10px 0; margin-top: 15px; }
-  .bio-area { width: 100%; border: 1.5px solid #ccc; border-radius: 12px; padding: 12px; font-size: 15px; outline: none; resize: none; margin-top: 15px; height: 90px; }
+  .input-underline { border: none; border-bottom: 2px solid #222; outline: none; font-size: 18px; font-weight: 700; width: 100%; padding: 10px 0; margin-top: 15px; background: transparent; color: #111; }
+  .bio-area { width: 100%; border: 1.5px solid #ccc; border-radius: 12px; padding: 12px; font-size: 15px; outline: none; resize: none; margin-top: 15px; height: 90px; color: #111; }
 
   /* Photo Upload Box */
-  .photo-picker { width: 130px; height: 160px; border: 2px dashed #fe3c72; border-radius: 16px; margin: 20px auto; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #fff5f7; position: relative; overflow: hidden; }
-  .photo-picker img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .photo-picker { width: 130px; height: 160px; border: 2px dashed #fe3c72; border-radius: 16px; margin: 15px auto; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #fff5f7; position: relative; overflow: hidden; }
+  .photo-picker img { width: 100%; height: 100%; object-fit: cover; display: none; position: absolute; top:0; left:0; }
   .photo-picker span { font-size: 30px; }
 
   /* Chips */
@@ -171,7 +171,7 @@
         <img id="userPhotoPreview" alt="Selfie">
       </div>
 
-      <input type="text" id="profName" class="input-underline" placeholder="First Name (e.g. Rahul)">
+      <input type="text" id="profName" class="input-underline" placeholder="First Name">
       <input type="number" id="profAge" class="input-underline" placeholder="Age (e.g. 24)" min="18" max="99">
       <textarea id="profBio" class="bio-area" placeholder="Write something about yourself (e.g. Looking for true connection, love music and traveling...)"></textarea>
     </div>
@@ -203,7 +203,7 @@
     </div>
   </div>
 
-  <!-- Profile Step 3: Passions -->
+  <!-- Profile Step 3: Passions (All requested added) -->
   <div class="view form-view" id="viewStepPassions">
     <div>
       <div class="back-btn" onclick="switchView('viewStepGender')">←</div>
@@ -211,11 +211,13 @@
       <p style="color: #666; font-size: 14px;">Select your interests to discover matches.</p>
       
       <div class="chip-grid" id="passionsGrid">
+        <div class="chip selected" onclick="toggleChip(this)">🧗‍♂️ Adventure</div>
         <div class="chip selected" onclick="toggleChip(this)">✈️ Travel</div>
-        <div class="chip selected" onclick="toggleChip(this)">☕ Coffee</div>
+        <div class="chip selected" onclick="toggleChip(this)">🍕 Food</div>
         <div class="chip selected" onclick="toggleChip(this)">🎵 Music</div>
-        <div class="chip" onclick="toggleChip(this)">🏋️ Fitness</div>
-        <div class="chip" onclick="toggleChip(this)">🍕 Foodie</div>
+        <div class="chip selected" onclick="toggleChip(this)">⚽ Sports</div>
+        <div class="chip selected" onclick="toggleChip(this)">🏋️ Gym</div>
+        <div class="chip" onclick="toggleChip(this)">☕ Coffee</div>
         <div class="chip" onclick="toggleChip(this)">🎮 Gaming</div>
         <div class="chip" onclick="toggleChip(this)">🎬 Movies</div>
         <div class="chip" onclick="toggleChip(this)">💻 Tech</div>
@@ -262,9 +264,9 @@
         <div class="profile-box">
           <p style="font-size: 12px; color: #8a96a3; font-weight: 700;">MY PASSIONS</p>
           <div id="dispProfileTags" style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+            <span class="tag-pill">🧗‍♂️ Adventure</span>
             <span class="tag-pill">✈️ Travel</span>
-            <span class="tag-pill">☕ Coffee</span>
-            <span class="tag-pill">🎵 Music</span>
+            <span class="tag-pill">🍕 Food</span>
           </div>
         </div>
 
@@ -310,33 +312,32 @@
 </div>
 
 <script>
-// Community Base Pool for Live Matchmaking
 const DEFAULT_MEMBERS = [
   {
     id: "user_1",
-    name: "Priya Sharma",
+    name: "Priya",
     age: 23,
     dist: "2.1 km away",
-    bio: "Love evening walks, acoustic coffee sessions & exploring new places ✈️",
-    tags: ["☕ Coffee", "✈️ Travel", "🎵 Music"],
+    bio: "Love adventure, music & traveling across new places ✈️",
+    tags: ["🧗‍♂️ Adventure", "✈️ Travel", "🎵 Music"],
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=700"
   },
   {
     id: "user_2",
-    name: "Ananya Iyer",
+    name: "Ananya",
     age: 24,
     dist: "3.5 km away",
-    bio: "Fitness fanatic & foodie. Let's grab coffee or go for a workout session 🏋️‍♀️",
-    tags: ["🏋️ Fitness", "🍕 Foodie", "🎬 Movies"],
+    bio: "Gym enthusiast, sports lover and foodie 🍕🏋️",
+    tags: ["⚽ Sports", "🏋️ Gym", "🍕 Food"],
     image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=700"
   },
   {
     id: "user_3",
-    name: "Sneha Patel",
+    name: "Sneha",
     age: 22,
     dist: "1.4 km away",
-    bio: "Looking for meaningful connection. Dog lover 🐶 and tech geek 💻",
-    tags: ["🐶 Pets", "💻 Tech", "🎨 Art"],
+    bio: "Looking for meaningful connection. Adventure and coffee ☕",
+    tags: ["🧗‍♂️ Adventure", "☕ Coffee", "💻 Tech"],
     image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=700"
   }
 ];
@@ -347,7 +348,6 @@ let uploadedPhotoData = "";
 let currentActiveProfile = null;
 let activeChatId = null;
 
-// Persistent Local User Profiles
 function getCommunityProfiles() {
   let list = JSON.parse(localStorage.getItem('twogether_members') || "[]");
   if (list.length === 0) {
@@ -417,7 +417,6 @@ function verifyOtpCode() {
   }
 }
 
-// User Selfie/Gallery Preview
 function previewUserPhoto(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -454,7 +453,7 @@ function toggleChip(el) {
 }
 
 function finishSetup() {
-  const name = document.getElementById('profName').value.trim() || 'Rahul Rai';
+  const name = document.getElementById('profName').value.trim() || 'Rahul';
   const age = document.getElementById('profAge').value.trim() || '24';
   const bio = document.getElementById('profBio').value.trim() || 'Looking for genuine connection ✨';
   
@@ -463,13 +462,11 @@ function finishSetup() {
 
   const photo = uploadedPhotoData || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400";
 
-  // Set Profile Tab Data
   document.getElementById('dispProfileName').innerText = `${name}, ${age}`;
   document.getElementById('dispProfileBio').innerText = bio;
   document.getElementById('dispProfilePic').src = photo;
   document.getElementById('dispProfileTags').innerHTML = tags.map(t => `<span class="tag-pill">${t}</span>`).join('');
 
-  // Register New Real User to Member Feed Pool
   const newMember = {
     id: "user_" + Date.now(),
     name: name,
@@ -570,7 +567,6 @@ function startChat(id, name, img) {
   document.getElementById('chatHeaderName').innerText = name;
   document.getElementById('chatHeaderImg').src = img;
   
-  // Load User Sent Messages
   const storedMsgs = JSON.parse(localStorage.getItem('chat_' + id) || "[]");
   const area = document.getElementById('chatMessages');
   area.innerHTML = '';
@@ -594,7 +590,6 @@ function sendChatMessage() {
   const area = document.getElementById('chatMessages');
   area.innerHTML += `<div class="msg-bubble msg-out">${text}</div>`;
   
-  // Save Message Locally
   const storedMsgs = JSON.parse(localStorage.getItem('chat_' + activeChatId) || "[]");
   storedMsgs.push(text);
   localStorage.setItem('chat_' + activeChatId, JSON.stringify(storedMsgs));
