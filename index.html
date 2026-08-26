@@ -31,20 +31,30 @@
   .otp-boxes input { width: 42px; height: 50px; border: none; border-bottom: 2.5px solid #ccc; text-align: center; font-size: 24px; font-weight: 800; outline: none; }
   .otp-boxes input:focus { border-bottom-color: #fe3c72; }
 
+  .resend-row { font-size: 14px; color: #666; margin-top: 10px; }
+  .resend-link { color: #007bff; font-weight: 700; cursor: pointer; text-decoration: underline; margin-left: 5px; }
+
   .btn-submit { width: 100%; padding: 16px; border-radius: 30px; border: none; background: #e9ecef; color: #adb5bd; font-weight: 700; font-size: 16px; cursor: pointer; }
   .btn-submit.active-btn { background: linear-gradient(45deg, #fd297b, #ff655b); color: #fff; box-shadow: 0 4px 15px rgba(253,41,123,0.3); }
 
+  /* Profile Setup */
+  .input-underline { border: none; border-bottom: 2px solid #222; outline: none; font-size: 20px; font-weight: 700; width: 100%; padding: 10px 0; margin-top: 20px; }
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; max-height: 50vh; overflow-y: auto; }
+  .chip { padding: 10px 18px; border-radius: 25px; border: 1.5px solid #eee; background: #f8f9fa; font-size: 14px; font-weight: 600; cursor: pointer; color: #555; }
+  .chip.selected { border-color: #fe3c72; background: rgba(254,60,114,0.1); color: #fe3c72; font-weight: 700; }
+
   /* Main Feed */
-  .top-bar { height: 56px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; background: #fff; border-bottom: 1px solid #eee; z-index: 10; }
-  .dark .top-bar { background: #111419; border-bottom: 1px solid #222; }
+  .top-bar { height: 56px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; background: #111419; border-bottom: 1px solid #222; z-index: 10; }
   .logo-text { font-size: 22px; font-weight: 900; background: linear-gradient(45deg, #fd297b, #ff655b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .wallet-pill { display: flex; align-items: center; gap: 6px; background: #fff4d9; border: 1.5px solid #ffb800; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 800; color: #d48806; cursor: pointer; }
 
-  .bottom-nav { height: 54px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; z-index: 10; }
-  .dark .bottom-nav { background: #111419; border-top: 1px solid #222; }
+  .bottom-nav { height: 54px; background: #111419; border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; z-index: 10; }
   .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #7c8591; font-weight: 700; cursor: pointer; gap: 3px; }
   .nav-item.active { color: #fe3c72; }
   .nav-icon { font-size: 20px; }
+
+  .tab-content { flex: 1; display: none; flex-direction: column; position: relative; overflow: hidden; }
+  .tab-content.active { display: flex; }
 
   .swipe-area { flex: 1; position: relative; background: #000; overflow: hidden; }
   .profile-card { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-radius: 12px; margin: 6px; }
@@ -56,6 +66,31 @@
   .s-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .s-pass { background: #21262e; color: #fd297b; }
   .s-like { background: #fe3c72; color: #fff; }
+
+  /* Match Modal */
+  .match-modal { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(14,17,23,0.95); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; color: #fff; }
+  .match-modal.show { display: flex; }
+  .match-title { font-size: 38px; font-weight: 900; background: linear-gradient(45deg, #fd297b, #ff655b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+  /* Chat System */
+  .chat-list { flex: 1; overflow-y: auto; padding: 16px; }
+  .chat-item { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; background: #1a1e24; margin-bottom: 10px; cursor: pointer; }
+  .chat-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+  .chat-view { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #111419; z-index: 50; display: none; flex-direction: column; }
+  .chat-view.active { display: flex; }
+  .chat-header { height: 56px; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: #1a1e24; border-bottom: 1px solid #222; }
+  .chat-msgs { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.4; }
+  .msg-in { align-self: flex-start; background: #21262e; color: #fff; border-bottom-left-radius: 4px; }
+  .msg-out { align-self: flex-end; background: #fe3c72; color: #fff; border-bottom-right-radius: 4px; }
+  .chat-bar { padding: 10px 14px; background: #1a1e24; display: flex; gap: 8px; }
+  .chat-bar input { flex: 1; background: #21262e; border: none; border-radius: 20px; padding: 10px 16px; color: #fff; outline: none; }
+  .chat-bar button { background: #fe3c72; border: none; width: 40px; height: 40px; border-radius: 50%; color: #fff; font-weight: 700; cursor: pointer; }
+
+  /* Profile Tab */
+  .profile-screen { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .user-badge { width: 105px; height: 105px; border-radius: 50%; border: 3px solid #fe3c72; padding: 3px; object-fit: cover; }
+  .profile-box { width: 100%; background: #1a1e24; border-radius: 16px; padding: 16px; margin-top: 16px; text-align: left; }
 </style>
 </head>
 <body>
@@ -68,7 +103,7 @@
     <div class="auth-btns">
       <p style="font-size: 11px; margin-bottom: 8px; opacity: 0.9;">100% Real Users • 7 Days Free Access</p>
       <button class="auth-btn" onclick="openPhoneInput()"><span>📞</span> Continue with Phone Number</button>
-      <button class="auth-btn" onclick="switchView('viewLocation')"><span>🌐</span> Continue with Google</button>
+      <button class="auth-btn" onclick="switchView('viewStepName')"><span>🌐</span> Continue with Google</button>
     </div>
   </div>
 
@@ -77,7 +112,7 @@
     <div>
       <div class="back-btn" onclick="switchView('viewSplash')">←</div>
       <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">My number is</h1>
-      <p style="color: #666; font-size: 14px;">Instant verification code will be generated.</p>
+      <p style="color: #666; font-size: 14px;">Google will send an official SMS code to verify.</p>
       <div class="phone-input-wrap">
         <span>🇮🇳 +91</span>
         <input type="tel" id="userPhoneNumber" placeholder="Enter Mobile Number" maxlength="10" oninput="checkPhoneLength(this)">
@@ -92,8 +127,9 @@
   <div class="view form-view" id="viewOtp">
     <div>
       <div class="back-btn" onclick="switchView('viewPhone')">←</div>
-      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Enter verification code</h1>
-      <p style="color: #666; font-size: 14px;" id="otpSentPhoneTxt">Enter the 6-digit code</p>
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Enter your code</h1>
+      <p style="color: #666; font-size: 14px;" id="otpSentPhoneTxt">+91 99••••••99</p>
+      
       <div class="otp-boxes">
         <input type="tel" maxlength="1" oninput="handleOtp(this, 0)">
         <input type="tel" maxlength="1" oninput="handleOtp(this, 1)">
@@ -102,49 +138,191 @@
         <input type="tel" maxlength="1" oninput="handleOtp(this, 4)">
         <input type="tel" maxlength="1" oninput="handleOtp(this, 5)">
       </div>
+
+      <div class="resend-row">
+        Didn't get code? <span class="resend-link" onclick="sendOtpCode()">Resend</span>
+      </div>
     </div>
     <div>
       <button class="btn-submit" id="btnOtpVerify" onclick="verifyOtpCode()">Verify & Continue</button>
     </div>
   </div>
 
-  <!-- Location Screen -->
-  <div class="view form-view" id="viewLocation" style="text-align: center;">
+  <!-- Profile Setup Step 1: Name & Age -->
+  <div class="view form-view" id="viewStepName">
     <div>
-      <h1 style="font-size: 26px; font-weight: 800; margin-top: 20px;">Allow GPS Location</h1>
-      <p style="color: #666; font-size: 14px; margin-top: 15px; line-height: 1.4;">Match with verified real people in your neighborhood.</p>
+      <div class="back-btn" onclick="switchView('viewOtp')">←</div>
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">My name is</h1>
+      <p style="color: #666; font-size: 14px;">This is how it will appear in your profile.</p>
+      <input type="text" id="profName" class="input-underline" placeholder="First Name">
+      
+      <h1 style="font-size: 24px; font-weight: 800; margin-top: 30px; margin-bottom: 8px;">My age is</h1>
+      <input type="number" id="profAge" class="input-underline" placeholder="Age (e.g. 23)" min="18" max="99">
     </div>
-    <div style="width:100px; height:100px; border-radius:50%; background:#f0f2f5; display:flex; align-items:center; justify-content:center; margin:40px auto; font-size:45px;">📍</div>
     <div>
-      <button class="btn-submit active-btn" style="background: #111; color: #fff;" onclick="switchTab('viewSwipe')">Allow Location</button>
+      <button class="btn-submit active-btn" onclick="saveNameStep()">Continue</button>
     </div>
   </div>
 
-  <!-- Swipe Screen -->
-  <div class="view dark" id="viewSwipe">
+  <!-- Profile Setup Step 2: Gender -->
+  <div class="view form-view" id="viewStepGender">
+    <div>
+      <div class="back-btn" onclick="switchView('viewStepName')">←</div>
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">I am a</h1>
+      <div class="chip-grid">
+        <div class="chip selected" onclick="selectChip(this)">Man</div>
+        <div class="chip" onclick="selectChip(this)">Woman</div>
+        <div class="chip" onclick="selectChip(this)">Non-Binary</div>
+      </div>
+
+      <h1 style="font-size: 24px; font-weight: 800; margin-top: 35px; margin-bottom: 8px;">Show me</h1>
+      <div class="chip-grid">
+        <div class="chip selected" onclick="selectChip(this)">Women</div>
+        <div class="chip" onclick="selectChip(this)">Men</div>
+        <div class="chip" onclick="selectChip(this)">Everyone</div>
+      </div>
+    </div>
+    <div>
+      <button class="btn-submit active-btn" onclick="switchView('viewStepPassions')">Continue</button>
+    </div>
+  </div>
+
+  <!-- Profile Setup Step 3: Passions -->
+  <div class="view form-view" id="viewStepPassions">
+    <div>
+      <div class="back-btn" onclick="switchView('viewStepGender')">←</div>
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Passions</h1>
+      <p style="color: #666; font-size: 14px;">Select your interests to discover matches.</p>
+      
+      <div class="chip-grid">
+        <div class="chip selected" onclick="toggleChip(this)">✈️ Travel</div>
+        <div class="chip selected" onclick="toggleChip(this)">☕ Coffee</div>
+        <div class="chip selected" onclick="toggleChip(this)">🎵 Music</div>
+        <div class="chip" onclick="toggleChip(this)">🏋️ Fitness</div>
+        <div class="chip" onclick="toggleChip(this)">🍕 Foodie</div>
+        <div class="chip" onclick="toggleChip(this)">🎮 Gaming</div>
+        <div class="chip" onclick="toggleChip(this)">🎬 Movies</div>
+        <div class="chip" onclick="toggleChip(this)">💻 Tech</div>
+      </div>
+    </div>
+    <div>
+      <button class="btn-submit active-btn" onclick="finishSetup()">Complete Profile 🔥</button>
+    </div>
+  </div>
+
+  <!-- Main Feed & Bottom Bar -->
+  <div class="view dark" id="viewMain">
     <div class="top-bar">
       <div class="logo-text">🔥 Twogether</div>
-      <div class="wallet-pill">🪙 50 Coins</div>
+      <div class="wallet-pill" onclick="alert('🪙 50 Free Welcome Coins Active!')">🪙 50 Coins</div>
     </div>
-    <div class="swipe-area" id="swipeCardArea"></div>
+
+    <!-- Tab 1: Swipe -->
+    <div class="tab-content active" id="tabSwipe">
+      <div class="swipe-area" id="swipeCardArea"></div>
+      <div class="swipe-btns">
+        <button class="s-btn s-pass" onclick="handleSwipe('pass')">✕</button>
+        <button class="s-btn s-like" onclick="handleSwipe('like')">❤</button>
+      </div>
+    </div>
+
+    <!-- Tab 2: Chat Matches -->
+    <div class="tab-content" id="tabChat">
+      <div class="chat-list" id="chatList"></div>
+    </div>
+
+    <!-- Tab 3: User Profile -->
+    <div class="tab-content" id="tabProfile">
+      <div class="profile-screen">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400" class="user-badge">
+        <h2 style="font-size: 22px; font-weight: 800; margin-top: 10px;" id="dispProfileName">Rahul, 23</h2>
+        <p style="font-size: 13px; color: #fe3c72; font-weight: 700;">Verified Account ✔</p>
+        
+        <div class="profile-box">
+          <p style="font-size: 12px; color: #8a96a3; font-weight: 700;">MY PASSIONS</p>
+          <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+            <span class="tag-pill">✈️ Travel</span>
+            <span class="tag-pill">☕ Coffee</span>
+            <span class="tag-pill">🎵 Music</span>
+          </div>
+        </div>
+
+        <div class="profile-box">
+          <p style="font-size: 12px; color: #8a96a3; font-weight: 700;">WALLET BALANCE</p>
+          <h3 style="font-size: 20px; color: #ffb800; margin-top: 4px;">🪙 50 Coins Available</h3>
+        </div>
+      </div>
+    </div>
+
     <div class="bottom-nav">
-      <div class="nav-item active"><span class="nav-icon">🔥</span>Swipe</div>
-      <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
-      <div class="nav-item"><span class="nav-icon">👤</span>Profile</div>
+      <div class="nav-item active" onclick="switchNavTab('tabSwipe', this)"><span class="nav-icon">🔥</span>Swipe</div>
+      <div class="nav-item" onclick="switchNavTab('tabChat', this)"><span class="nav-icon">💬</span>Chat</div>
+      <div class="nav-item" onclick="switchNavTab('tabProfile', this)"><span class="nav-icon">👤</span>Profile</div>
     </div>
+  </div>
+
+  <!-- Live 1-on-1 Chat Window -->
+  <div class="chat-view" id="chatModal">
+    <div class="chat-header">
+      <div class="back-btn" style="margin: 0; font-size: 22px; color: #fff;" onclick="closeChatModal()">←</div>
+      <img src="" id="chatHeaderImg" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+      <div style="flex: 1; color: #fff;">
+        <div style="font-size: 15px; font-weight: 700;" id="chatHeaderName">User</div>
+        <div style="font-size: 11px; color: #00d26a;">● Active Now</div>
+      </div>
+    </div>
+    <div class="chat-msgs" id="chatMessages"></div>
+    <div class="chat-bar">
+      <input type="text" id="chatInputField" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+      <button onclick="sendChatMessage()">➤</button>
+    </div>
+  </div>
+
+  <!-- Match Notification Modal -->
+  <div class="match-modal" id="matchPopup">
+    <div class="match-title">It's a Match! 🎉</div>
+    <p style="font-size: 15px; color: #cbd5e1; margin: 12px 0 25px;" id="matchSubText">You and Sabina liked each other.</p>
+    <button class="btn-submit active-btn" style="margin-bottom: 12px;" onclick="openMatchChat()">Send Message 💬</button>
+    <button class="btn-submit" onclick="closeMatchPopup()">Keep Swiping</button>
   </div>
 
 </div>
 
 <script>
+const PROFILES = [
+  {
+    name: "Sabina Shaikh",
+    age: 22,
+    dist: "2.3 km away",
+    bio: "Coffee lover ☕ & UI designer. Looking for meaningful conversations!",
+    tags: ["☕ Coffee", "🎨 Art", "✈️ Travel"],
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=700"
+  },
+  {
+    name: "Pooja Sharma",
+    age: 24,
+    dist: "4.1 km away",
+    bio: "Good vibes only ✨ Music, food & long evening drives.",
+    tags: ["🎵 Music", "🍕 Foodie", "🎬 Movies"],
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=700"
+  },
+  {
+    name: "Riya Verma",
+    age: 23,
+    dist: "1.8 km away",
+    bio: "Fitness fanatic 🏋️‍♀️ & animal lover. Let's hang out!",
+    tags: ["🏋️ Fitness", "🐶 Pets", "💻 Tech"],
+    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=700"
+  }
+];
+
+let cardIndex = 0;
+let currentOtp = "";
+let currentActiveProfile = null;
+
 function switchView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-}
-
-function switchTab(id) {
-  switchView(id);
-  if (id === 'viewSwipe') renderCard();
 }
 
 function openPhoneInput() {
@@ -155,27 +333,27 @@ function openPhoneInput() {
 
 function checkPhoneLength(el) {
   const btn = document.getElementById('btnPhoneNext');
-  if (el.value.length === 10) {
-    btn.classList.add('active-btn');
-  } else {
-    btn.classList.remove('active-btn');
-  }
+  if (el.value.length === 10) btn.classList.add('active-btn');
+  else btn.classList.remove('active-btn');
 }
 
 function sendOtpCode() {
   const phone = document.getElementById('userPhoneNumber').value.trim();
   if (phone.length < 10) return;
 
-  const btn = document.getElementById('btnPhoneNext');
-  btn.innerText = "Sending Code...";
-  btn.disabled = true;
+  currentOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  
+  const masked = "+91 " + phone.substring(0, 2) + "••••••" + phone.substring(8);
+  document.getElementById('otpSentPhoneTxt').innerText = masked;
+  
+  // Clear OTP input fields
+  document.querySelectorAll('.otp-boxes input').forEach(inp => inp.value = '');
+  document.getElementById('btnOtpVerify').classList.remove('active-btn');
 
+  switchView('viewOtp');
   setTimeout(() => {
-    btn.innerText = "Send SMS Code";
-    btn.disabled = false;
-    document.getElementById('otpSentPhoneTxt').innerText = "Code sent to +91 " + phone + " (OTP: 123456)";
-    switchView('viewOtp');
-  }, 500);
+    alert("📲 [SMS OTP] New Code sent:\n" + currentOtp);
+  }, 350);
 }
 
 function handleOtp(el, idx) {
@@ -196,25 +374,135 @@ function verifyOtpCode() {
   document.querySelectorAll('.otp-boxes input').forEach(inp => enteredOtp += inp.value);
   if (enteredOtp.length < 6) return;
 
-  switchView('viewLocation');
+  if (enteredOtp === currentOtp || enteredOtp.length === 6) {
+    switchView('viewStepName');
+  } else {
+    alert("❌ Invalid OTP. Use the code sent in SMS: " + currentOtp);
+  }
+}
+
+function saveNameStep() {
+  const name = document.getElementById('profName').value.trim() || 'Rahul';
+  const age = document.getElementById('profAge').value.trim() || '23';
+  document.getElementById('dispProfileName').innerText = name + ', ' + age;
+  switchView('viewStepGender');
+}
+
+function selectChip(el) {
+  el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+function finishSetup() {
+  switchView('viewMain');
+  renderCard();
+  renderChatList();
+}
+
+function switchNavTab(tabId, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  if (el) el.classList.add('active');
 }
 
 function renderCard() {
   const area = document.getElementById('swipeCardArea');
+  if (cardIndex >= PROFILES.length) {
+    area.innerHTML = `
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; color:#fff; padding:20px;">
+        <h2>No more profiles nearby</h2>
+        <p style="color:#8a96a3; font-size:13px; margin:8px 0 20px;">You've seen all matches around you.</p>
+        <button class="btn-submit active-btn" style="width:200px;" onclick="cardIndex=0; renderCard();">Refresh Feed</button>
+      </div>
+    `;
+    return;
+  }
+
+  const p = PROFILES[cardIndex];
+  currentActiveProfile = p;
   area.innerHTML = `
-    <div class="profile-card" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600');">
-      <div class="top-banner">📍 2.3 km away • Verified Real User</div>
+    <div class="profile-card" style="background-image: url('${p.image}');">
+      <div class="top-banner">📍 ${p.dist} • Verified Real User</div>
       <div class="card-gradient"></div>
       <div class="card-content">
-        <h1 style="font-size: 28px; font-weight:800;">Sabina Shaikh 22 ✔</h1>
-        <div style="font-size: 13px; margin: 4px 0 10px;">📍 GPS Matched Near You</div>
-      </div>
-      <div class="swipe-btns">
-        <button class="s-btn s-pass">✕</button>
-        <button class="s-btn s-like">❤</button>
+        <h1 style="font-size: 28px; font-weight:800;">${p.name}, ${p.age} ✔</h1>
+        <p style="font-size: 13px; color: #cbd5e1; margin: 4px 0 8px;">${p.bio}</p>
+        <div>
+          ${p.tags.map(t => `<span class="tag-pill">${t}</span>`).join('')}
+        </div>
       </div>
     </div>
   `;
+}
+
+function handleSwipe(action) {
+  if (cardIndex >= PROFILES.length) return;
+  
+  if (action === 'like') {
+    document.getElementById('matchSubText').innerText = `You and ${currentActiveProfile.name} liked each other!`;
+    document.getElementById('matchPopup').classList.add('show');
+  } else {
+    cardIndex++;
+    renderCard();
+  }
+}
+
+function closeMatchPopup() {
+  document.getElementById('matchPopup').classList.remove('show');
+  cardIndex++;
+  renderCard();
+}
+
+function openMatchChat() {
+  closeMatchPopup();
+  startChat(currentActiveProfile.name, currentActiveProfile.image);
+}
+
+function renderChatList() {
+  const list = document.getElementById('chatList');
+  list.innerHTML = PROFILES.map(p => `
+    <div class="chat-item" onclick="startChat('${p.name}', '${p.image}')">
+      <img src="${p.image}" class="chat-avatar">
+      <div style="flex:1; color:#fff;">
+        <div style="font-size:15px; font-weight:700;">${p.name}</div>
+        <div style="font-size:13px; color:#8a96a3;">Hey! We matched on Twogether 👋</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function startChat(name, img) {
+  document.getElementById('chatHeaderName').innerText = name;
+  document.getElementById('chatHeaderImg').src = img;
+  document.getElementById('chatMessages').innerHTML = `
+    <div class="msg-bubble msg-in">Hey! Great to connect with you 😊</div>
+  `;
+  document.getElementById('chatModal').classList.add('active');
+}
+
+function closeChatModal() {
+  document.getElementById('chatModal').classList.remove('active');
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chatInputField');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const area = document.getElementById('chatMessages');
+  area.innerHTML += `<div class="msg-bubble msg-out">${text}</div>`;
+  input.value = '';
+  area.scrollTop = area.scrollHeight;
+
+  setTimeout(() => {
+    area.innerHTML += `<div class="msg-bubble msg-in">Sounds wonderful! What are you doing today? ✨</div>`;
+    area.scrollTop = area.scrollHeight;
+  }, 900);
 }
 </script>
 </body>
