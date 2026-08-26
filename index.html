@@ -5,240 +5,340 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Twogether - Dating App</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-  body {
-    background: #0f1015;
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
-  }
-  .app-container {
-    width: 100%;
-    max-width: 420px;
-    height: 100%;
-    max-height: 850px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    background: #181920;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-  }
-  .header {
-    height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    font-weight: 800;
-    font-size: 22px;
-    background: linear-gradient(45deg, #ff4b4b, #ff416c);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  .card-stack {
-    flex: 1;
-    position: relative;
-    margin: 15px;
-  }
-  .card {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    border-radius: 18px;
-    overflow-y: auto;
-    background: #23242f;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-  .card img {
-    width: 100%;
-    height: 380px;
-    object-fit: cover;
-    border-top-left-radius: 18px;
-    border-top-right-radius: 18px;
-    display: block;
-  }
-  .profile-info {
-    padding: 16px;
-  }
-  .name-age {
-    font-size: 24px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .location {
-    font-size: 14px;
-    color: #a0a0b0;
-    margin-top: 4px;
-  }
-  .bio {
-    font-size: 14px;
-    color: #e0e0e0;
-    margin: 12px 0;
-    line-height: 1.4;
-  }
-  .badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 12px 0;
-  }
-  .badge {
-    background: rgba(255,255,255,0.08);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    color: #ff758c;
-    border: 1px solid rgba(255,117,140,0.2);
-  }
-  .prompt-box {
-    background: rgba(255,255,255,0.04);
-    border-left: 3px solid #ff416c;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin: 12px 0;
-  }
-  .prompt-q { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-  .prompt-a { font-size: 15px; font-weight: 600; margin-top: 4px; }
-  .actions {
-    height: 80px;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    padding-bottom: 10px;
-  }
-  .btn {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    border: none;
-    font-size: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    transition: transform 0.1s;
-  }
-  .btn:active { transform: scale(0.9); }
-  .btn-pass { background: #2a2b36; color: #ff4757; }
-  .btn-super { background: #2a2b36; color: #2ed573; }
-  .btn-like { background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: #0f1015; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+  .app-container { width: 100%; max-width: 420px; height: 100%; max-height: 850px; position: relative; background: #181920; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
+  .screen { display: none; width: 100%; height: 100%; flex-direction: column; position: absolute; top: 0; left: 0; background: #181920; }
+  .screen.active { display: flex; }
+  
+  /* Auth Screen */
+  .auth-bg { background: linear-gradient(135deg, #181920 0%, #29111e 50%, #181920 100%); padding: 30px 24px; justify-content: space-between; align-items: center; text-align: center; }
+  .logo-title { font-size: 38px; font-weight: 900; background: linear-gradient(45deg, #ff416c, #ff4b4b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 60px; }
+  .auth-box { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; }
+  .input-field { width: 100%; padding: 14px 16px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #fff; font-size: 15px; outline: none; }
+  .btn-primary { width: 100%; padding: 15px; border-radius: 30px; border: none; background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,65,108,0.4); }
+  .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.2); }
+
+  /* Setup Screen */
+  .setup-view { padding: 24px; overflow-y: auto; }
+  .setup-view h2 { font-size: 24px; margin-bottom: 8px; color: #fff; }
+  .setup-view p { font-size: 13px; color: #888; margin-bottom: 20px; }
+  .form-group { margin-bottom: 16px; text-align: left; }
+  .form-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
+
+  /* Main Header */
+  .header { height: 56px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .header-brand { font-size: 22px; font-weight: 800; background: linear-gradient(45deg, #ff416c, #ff4b4b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header-icons { display: flex; gap: 16px; font-size: 20px; cursor: pointer; }
+
+  /* Swiping Stack */
+  .card-stack { flex: 1; position: relative; margin: 12px; }
+  .card { position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 16px; overflow-y: auto; background: #23242f; transition: transform 0.25s, opacity 0.25s; }
+  .card img { width: 100%; height: 380px; object-fit: cover; display: block; }
+  .card-details { padding: 16px; }
+  .name-age { font-size: 22px; font-weight: 700; }
+  .location { font-size: 13px; color: #aaa; margin-top: 3px; }
+  .bio { font-size: 14px; margin-top: 10px; line-height: 1.4; color: #ddd; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .tag { background: rgba(255,255,255,0.08); padding: 5px 10px; border-radius: 15px; font-size: 12px; color: #ff758c; }
+
+  /* Action Buttons */
+  .actions { height: 75px; display: flex; justify-content: space-evenly; align-items: center; padding-bottom: 8px; }
+  .action-btn { width: 54px; height: 54px; border-radius: 50%; border: none; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+  .btn-pass { background: #23242f; color: #ff4757; }
+  .btn-super { background: #23242f; color: #2ed573; }
+  .btn-heart { background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; }
+
+  /* Modals */
+  .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,16,21,0.96); z-index: 99; flex-direction: column; }
+  .modal.active { display: flex; }
+  .modal-top { height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .modal-content { flex: 1; padding: 20px; overflow-y: auto; }
+
+  /* Match Overlay */
+  .match-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+  .match-txt { font-size: 36px; font-weight: 900; background: linear-gradient(45deg, #ff416c, #ff4b4b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+  .avatar-pair { display: flex; gap: 15px; margin-bottom: 25px; }
+  .avatar-pair img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ff416c; object-fit: cover; }
+
+  /* Chat Box */
+  .chat-stream { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .bubble { max-width: 75%; padding: 10px 14px; border-radius: 16px; font-size: 14px; }
+  .bubble-in { background: #2a2b36; align-self: flex-start; }
+  .bubble-out { background: linear-gradient(45deg, #ff416c, #ff4b4b); align-self: flex-end; }
+  .chat-bar { display: flex; padding: 10px; background: #23242f; }
+  .chat-bar input { flex: 1; background: #181920; border: none; padding: 10px 15px; border-radius: 20px; color: #fff; outline: none; }
+  .chat-bar button { background: none; border: none; color: #ff416c; font-size: 20px; padding: 0 10px; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <div class="app-container">
-  <div class="header">
-    <span>🔥 Twogether</span>
-    <span style="font-size: 16px; color: #aaa;">📍 Pune</span>
+  <!-- 1. Phone Login Screen -->
+  <div class="screen auth-bg active" id="screenLogin">
+    <div>
+      <div class="logo-title">🔥 Twogether</div>
+      <p style="color: #aaa; margin-top: 10px; font-size: 14px;">Find your soulmate nearby</p>
+    </div>
+    <div class="auth-box">
+      <input type="tel" id="userPhone" class="input-field" placeholder="Enter Phone Number (+91...)">
+      <button class="btn-primary" onclick="showOtpScreen()">Continue with Phone</button>
+      <button class="btn-primary btn-secondary" onclick="guestLogin()">Demo Guest Login</button>
+    </div>
+    <p style="font-size: 11px; color: #666;">By tapping Continue, you agree to our Terms & Privacy Policy.</p>
   </div>
 
-  <div class="card-stack" id="cardStack"></div>
+  <!-- 2. OTP Verification Screen -->
+  <div class="screen auth-bg" id="screenOtp">
+    <div class="logo-title">Enter Code</div>
+    <div class="auth-box">
+      <p style="font-size: 14px; color: #bbb;">OTP sent to your number (Use Demo: 1234)</p>
+      <input type="number" id="otpCode" class="input-field" placeholder="4-digit OTP" style="text-align: center; letter-spacing: 5px; font-size: 20px;">
+      <button class="btn-primary" onclick="verifyOtp()">Verify OTP</button>
+      <button class="btn-primary btn-secondary" onclick="switchScreen('screenLogin')">Back</button>
+    </div>
+    <div></div>
+  </div>
 
-  <div class="actions">
-    <button class="btn btn-pass" onclick="swipe('left')">✖</button>
-    <button class="btn btn-super" onclick="swipe('up')">⭐</button>
-    <button class="btn btn-like" onclick="swipe('right')">❤</button>
+  <!-- 3. Profile Onboarding Screen -->
+  <div class="screen setup-view" id="screenProfileSetup">
+    <h2>Create Profile</h2>
+    <p>Tell us about yourself to find better matches</p>
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" id="setupName" class="input-field" placeholder="Rahul">
+    </div>
+    <div class="form-group">
+      <label>Age</label>
+      <input type="number" id="setupAge" class="input-field" placeholder="24">
+    </div>
+    <div class="form-group">
+      <label>Gender</label>
+      <select id="setupGender" class="input-field" style="background:#23242f;">
+        <option>Man</option>
+        <option>Woman</option>
+        <option>More options</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Location</label>
+      <input type="text" id="setupLoc" class="input-field" placeholder="Pune, India">
+    </div>
+    <button class="btn-primary" onclick="finishSetup()">Complete & Start Matching</button>
+  </div>
+
+  <!-- 4. Main Tinder Swipe Feed -->
+  <div class="screen" id="screenMain">
+    <div class="header">
+      <span class="header-brand">🔥 Twogether</span>
+      <div class="header-icons">
+        <span onclick="openModal('modalFilter')">⚙️</span>
+        <span onclick="openChat()">💬</span>
+      </div>
+    </div>
+    <div class="card-stack" id="feedCards"></div>
+    <div class="actions">
+      <button class="action-btn btn-pass" onclick="swipeAction('left')">✕</button>
+      <button class="action-btn btn-super" onclick="swipeAction('up')">⭐</button>
+      <button class="action-btn btn-heart" onclick="swipeAction('right')">❤</button>
+    </div>
+  </div>
+
+  <!-- Modals: Filter, Match, Chat -->
+  <div class="modal" id="modalFilter">
+    <div class="modal-top">
+      <h3>Discovery Filters</h3>
+      <span style="cursor:pointer; font-size: 20px;" onclick="closeModal('modalFilter')">✕</span>
+    </div>
+    <div class="modal-content">
+      <div class="form-group">
+        <label>Distance Preference: <span id="distLabel">25</span> km</label>
+        <input type="range" min="5" max="100" value="25" style="width: 100%;" oninput="document.getElementById('distLabel').innerText = this.value">
+      </div>
+      <div class="form-group">
+        <label>Age Preference: 18 - <span id="ageLabel">30</span></label>
+        <input type="range" min="18" max="50" value="30" style="width: 100%;" oninput="document.getElementById('ageLabel').innerText = this.value">
+      </div>
+      <button class="btn-primary" onclick="closeModal('modalFilter')">Save Preferences</button>
+    </div>
+  </div>
+
+  <div class="modal" id="modalMatch">
+    <div class="match-center">
+      <div class="match-txt">It's a Match!</div>
+      <p style="color:#aaa; margin-bottom: 20px;">You and <span id="matchedName"></span> liked each other!</p>
+      <div class="avatar-pair">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" alt="Me">
+        <img id="matchedImg" src="" alt="Match">
+      </div>
+      <button class="btn-primary" style="margin-bottom:12px;" onclick="openChatFromMatch()">Send a Message</button>
+      <button class="btn-primary btn-secondary" onclick="closeModal('modalMatch')">Keep Swiping</button>
+    </div>
+  </div>
+
+  <div class="modal" id="modalChat">
+    <div class="modal-top">
+      <h3 id="chatPartner">Chat</h3>
+      <span style="cursor:pointer; font-size: 20px;" onclick="closeModal('modalChat')">✕</span>
+    </div>
+    <div class="chat-stream" id="chatBox">
+      <div class="bubble bubble-in">Hey! Loved your profile 😊</div>
+    </div>
+    <div class="chat-bar">
+      <input type="text" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+      <button onclick="sendChatMessage()">➤</button>
+    </div>
   </div>
 </div>
 
 <script>
+let currentUser = null;
+let currentProfileIdx = 0;
+let matchedProfile = null;
+
 const profiles = [
   {
     name: "Riya Sharma",
     age: 23,
     city: "Koregaon Park, Pune",
-    height: "5'6'' (168 cm)",
-    diet: "Vegetarian",
-    workout: "Yoga & Gym",
-    drinking: "Socially",
-    smoking: "Never",
-    goal: "Long-term relationship",
-    bio: "Coffee lover, weekend hiker, and tech enthusiast. Let's find the best cafes together!",
-    interests: ["Travel", "Photography", "Coffee", "Fitness"],
-    promptQ: "The way to win me over is",
-    promptA: "Good sense of humor and hot filter coffee.",
+    bio: "Weekend hiker, cafe explorer & filter coffee addict ☕",
+    tags: ["Coffee", "Hiking", "Travel", "Yoga"],
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600"
   },
   {
     name: "Aanya Verma",
     age: 25,
     city: "Viman Nagar, Pune",
-    height: "5'4'' (163 cm)",
-    diet: "Non-Veg",
-    workout: "Cardio",
-    drinking: "Never",
-    smoking: "Non-smoker",
-    goal: "Casual dating / New friends",
-    bio: "UI/UX Designer who loves road trips and live acoustic music.",
-    interests: ["Design", "Music", "Road Trips", "Art"],
-    promptQ: "Best travel story",
-    promptA: "Rented a scooter in Goa and found a hidden private beach.",
+    bio: "UI/UX Designer who loves road trips and indie music 🎸",
+    tags: ["Design", "Music", "Road Trips", "Art"],
     image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600"
+  },
+  {
+    name: "Simran Kaur",
+    age: 24,
+    city: "Baner, Pune",
+    bio: "Foodie at heart. Let's find Pune's best street food!",
+    tags: ["Foodie", "Dancing", "Movies"],
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600"
   }
 ];
 
-let currentIndex = 0;
+function switchScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-function renderCard() {
-  const stack = document.getElementById('cardStack');
+function showOtpScreen() {
+  const phone = document.getElementById('userPhone').value.trim();
+  if (!phone) { alert("Please enter phone number"); return; }
+  switchScreen('screenOtp');
+}
+
+function verifyOtp() {
+  const otp = document.getElementById('otpCode').value.trim();
+  if (otp.length >= 4) {
+    switchScreen('screenProfileSetup');
+  } else {
+    alert("Please enter valid OTP (Demo: 1234)");
+  }
+}
+
+function guestLogin() {
+  currentUser = { name: "Guest User", age: 24 };
+  switchScreen('screenMain');
+  renderCurrentCard();
+}
+
+function finishSetup() {
+  const name = document.getElementById('setupName').value.trim() || "Rahul";
+  const age = document.getElementById('setupAge').value.trim() || 24;
+  currentUser = { name, age };
+  switchScreen('screenMain');
+  renderCurrentCard();
+}
+
+function renderCurrentCard() {
+  const stack = document.getElementById('feedCards');
   stack.innerHTML = '';
-  if (currentIndex >= profiles.length) {
-    stack.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;">No more profiles nearby!</div>';
+  if (currentProfileIdx >= profiles.length) {
+    stack.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;">No more profiles nearby right now!</div>';
     return;
   }
-  const p = profiles[currentIndex];
+  const p = profiles[currentProfileIdx];
   const card = document.createElement('div');
   card.className = 'card';
   card.innerHTML = `
-    <img src="${p.image}" alt="${p.name}">
-    <div class="profile-info">
+    <img src="${p.image}">
+    <div class="card-details">
       <div class="name-age">${p.name}, ${p.age}</div>
       <div class="location">📍 ${p.city}</div>
       <div class="bio">${p.bio}</div>
-      <div class="badges">
-        <span class="badge">📏 ${p.height}</span>
-        <span class="badge">🥗 ${p.diet}</span>
-        <span class="badge">🏋️ ${p.workout}</span>
-        <span class="badge">🍷 ${p.drinking}</span>
-        <span class="badge">🚭 ${p.smoking}</span>
-        <span class="badge">🎯 ${p.goal}</span>
-      </div>
-      <div class="prompt-box">
-        <div class="prompt-q">${p.promptQ}</div>
-        <div class="prompt-a">${p.promptA}</div>
-      </div>
-      <div class="badges">
-        ${p.interests.map(i => `<span class="badge" style="color:#00d2d3; border-color:rgba(0,210,211,0.3)">#${i}</span>`).join('')}
-      </div>
+      <div class="tags">${p.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>
     </div>
   `;
   stack.appendChild(card);
 }
 
-function swipe(dir) {
+function swipeAction(dir) {
   const card = document.querySelector('.card');
   if (!card) return;
-  if (dir === 'left') card.style.transform = 'translateX(-120%) rotate(-20deg)';
-  if (dir === 'right') card.style.transform = 'translateX(120%) rotate(20deg)';
-  if (dir === 'up') card.style.transform = 'translateY(-120%) scale(0.9)';
+  const p = profiles[currentProfileIdx];
+
+  if (dir === 'left') {
+    card.style.transform = 'translateX(-120%) rotate(-15deg)';
+  } else {
+    card.style.transform = 'translateX(120%) rotate(15deg)';
+    setTimeout(() => { triggerMatch(p); }, 250);
+  }
   card.style.opacity = '0';
   setTimeout(() => {
-    currentIndex++;
-    renderCard();
+    currentProfileIdx++;
+    renderCurrentCard();
   }, 250);
 }
 
-renderCard();
+function triggerMatch(p) {
+  matchedProfile = p;
+  document.getElementById('matchedName').innerText = p.name;
+  document.getElementById('matchedImg').src = p.image;
+  openModal('modalMatch');
+}
+
+function openChatFromMatch() {
+  closeModal('modalMatch');
+  openChat(matchedProfile);
+}
+
+function openChat(p = profiles[0]) {
+  matchedProfile = p;
+  document.getElementById('chatPartner').innerText = p.name;
+  openModal('modalChat');
+}
+
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function sendChatMessage() {
+  const inp = document.getElementById('chatInput');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  const box = document.getElementById('chatBox');
+  
+  const myMsg = document.createElement('div');
+  myMsg.className = 'bubble bubble-out';
+  myMsg.innerText = txt;
+  box.appendChild(myMsg);
+  inp.value = '';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(() => {
+    const reply = document.createElement('div');
+    reply.className = 'bubble bubble-in';
+    reply.innerText = "Hey! That's awesome 😄";
+    box.appendChild(reply);
+    box.scrollTop = box.scrollHeight;
+  }, 1000);
+}
 </script>
 </body>
 </html>
