@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Twogether - Dating App</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+  body {
+    background: #0f1015;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .app-container {
+    width: 100%;
+    max-width: 420px;
+    height: 100%;
+    max-height: 850px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: #181920;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  }
+  .header {
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    font-weight: 800;
+    font-size: 22px;
+    background: linear-gradient(45deg, #ff4b4b, #ff416c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .card-stack {
+    flex: 1;
+    position: relative;
+    margin: 15px;
+  }
+  .card {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 18px;
+    overflow-y: auto;
+    background: #23242f;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .card img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    display: block;
+  }
+  .profile-info {
+    padding: 16px;
+  }
+  .name-age {
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .location {
+    font-size: 14px;
+    color: #a0a0b0;
+    margin-top: 4px;
+  }
+  .bio {
+    font-size: 14px;
+    color: #e0e0e0;
+    margin: 12px 0;
+    line-height: 1.4;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .badge {
+    background: rgba(255,255,255,0.08);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #ff758c;
+    border: 1px solid rgba(255,117,140,0.2);
+  }
+  .prompt-box {
+    background: rgba(255,255,255,0.04);
+    border-left: 3px solid #ff416c;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 12px 0;
+  }
+  .prompt-q { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .prompt-a { font-size: 15px; font-weight: 600; margin-top: 4px; }
+  .actions {
+    height: 80px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+  .btn {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: none;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.9); }
+  .btn-pass { background: #2a2b36; color: #ff4757; }
+  .btn-super { background: #2a2b36; color: #2ed573; }
+  .btn-like { background: linear-gradient(45deg, #ff416c, #ff4b4b); color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header">
+    <span>🔥 Twogether</span>
+    <span style="font-size: 16px; color: #aaa;">📍 Pune</span>
+  </div>
+
+  <div class="card-stack" id="cardStack"></div>
+
+  <div class="actions">
+    <button class="btn btn-pass" onclick="swipe('left')">✖</button>
+    <button class="btn btn-super" onclick="swipe('up')">⭐</button>
+    <button class="btn btn-like" onclick="swipe('right')">❤</button>
+  </div>
+</div>
+
+<script>
+const profiles = [
+  {
+    name: "Riya Sharma",
+    age: 23,
+    city: "Koregaon Park, Pune",
+    height: "5'6'' (168 cm)",
+    diet: "Vegetarian",
+    workout: "Yoga & Gym",
+    drinking: "Socially",
+    smoking: "Never",
+    goal: "Long-term relationship",
+    bio: "Coffee lover, weekend hiker, and tech enthusiast. Let's find the best cafes together!",
+    interests: ["Travel", "Photography", "Coffee", "Fitness"],
+    promptQ: "The way to win me over is",
+    promptA: "Good sense of humor and hot filter coffee.",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600"
+  },
+  {
+    name: "Aanya Verma",
+    age: 25,
+    city: "Viman Nagar, Pune",
+    height: "5'4'' (163 cm)",
+    diet: "Non-Veg",
+    workout: "Cardio",
+    drinking: "Never",
+    smoking: "Non-smoker",
+    goal: "Casual dating / New friends",
+    bio: "UI/UX Designer who loves road trips and live acoustic music.",
+    interests: ["Design", "Music", "Road Trips", "Art"],
+    promptQ: "Best travel story",
+    promptA: "Rented a scooter in Goa and found a hidden private beach.",
+    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600"
+  }
+];
+
+let currentIndex = 0;
+
+function renderCard() {
+  const stack = document.getElementById('cardStack');
+  stack.innerHTML = '';
+  if (currentIndex >= profiles.length) {
+    stack.innerHTML = '<div style="display:flex;height:100%;justify-content:center;align-items:center;color:#888;">No more profiles nearby!</div>';
+    return;
+  }
+  const p = profiles[currentIndex];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <img src="${p.image}" alt="${p.name}">
+    <div class="profile-info">
+      <div class="name-age">${p.name}, ${p.age}</div>
+      <div class="location">📍 ${p.city}</div>
+      <div class="bio">${p.bio}</div>
+      <div class="badges">
+        <span class="badge">📏 ${p.height}</span>
+        <span class="badge">🥗 ${p.diet}</span>
+        <span class="badge">🏋️ ${p.workout}</span>
+        <span class="badge">🍷 ${p.drinking}</span>
+        <span class="badge">🚭 ${p.smoking}</span>
+        <span class="badge">🎯 ${p.goal}</span>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-q">${p.promptQ}</div>
+        <div class="prompt-a">${p.promptA}</div>
+      </div>
+      <div class="badges">
+        ${p.interests.map(i => `<span class="badge" style="color:#00d2d3; border-color:rgba(0,210,211,0.3)">#${i}</span>`).join('')}
+      </div>
+    </div>
+  `;
+  stack.appendChild(card);
+}
+
+function swipe(dir) {
+  const card = document.querySelector('.card');
+  if (!card) return;
+  if (dir === 'left') card.style.transform = 'translateX(-120%) rotate(-20deg)';
+  if (dir === 'right') card.style.transform = 'translateX(120%) rotate(20deg)';
+  if (dir === 'up') card.style.transform = 'translateY(-120%) scale(0.9)';
+  card.style.opacity = '0';
+  setTimeout(() => {
+    currentIndex++;
+    renderCard();
+  }, 250);
+}
+
+renderCard();
+</script>
+</body>
+</html>

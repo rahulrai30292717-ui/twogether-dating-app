@@ -1,0 +1,17 @@
+{
+  "name": "User Name",
+  "age": 24,
+  "gender": "Male",
+  "interestedIn": "Female",
+  "heightCm": 178,
+  "drinkingHabit": "Socially",
+  "smokingHabit": "Non-smoker",
+  "workout": "Regularly",
+  "diet": "Non-Veg",
+  "relationshipGoal": "Long-term",
+  "interests": ["Gym", "Music", "Coding", "Travel"],
+  "prompts": {
+    "The way to win me over is": "Good food and long drives"
+  },
+  "photoUrls": []
+}
