@@ -7,10 +7,10 @@
 
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: #000; color: #111; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-  .app-container { width: 100%; max-width: 450px; height: 100%; position: relative; background: #fff; overflow: hidden; display: flex; flex-direction: column; }
+  body { background: #000; color: #fff; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+  .app-container { width: 100%; max-width: 450px; height: 100%; position: relative; background: #111419; overflow: hidden; display: flex; flex-direction: column; }
   
-  .view { display: none; width: 100%; height: 100%; flex-direction: column; position: absolute; top: 0; left: 0; background: #fff; }
+  .view { display: none; width: 100%; height: 100%; flex-direction: column; position: absolute; top: 0; left: 0; background: #fff; color: #111; z-index: 5; }
   .view.active { display: flex; }
   .view.dark { background: #111419; color: #fff; }
 
@@ -21,13 +21,13 @@
   .auth-btn { width: 100%; padding: 15px; border-radius: 30px; border: none; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; background: #fff; color: #222; }
 
   /* Forms */
-  .form-view { padding: 24px; flex-direction: column; justify-content: space-between; }
-  .back-btn { font-size: 26px; cursor: pointer; width: 30px; margin-bottom: 15px; }
-  .phone-input-wrap { display: flex; align-items: center; border-bottom: 2px solid #222; padding: 10px 0; margin-top: 30px; font-size: 20px; font-weight: 700; }
+  .form-view { padding: 24px; flex-direction: column; justify-content: space-between; overflow-y: auto; }
+  .back-btn { font-size: 26px; cursor: pointer; width: 30px; margin-bottom: 12px; }
+  .phone-input-wrap { display: flex; align-items: center; border-bottom: 2px solid #222; padding: 10px 0; margin-top: 25px; font-size: 20px; font-weight: 700; }
   .phone-input-wrap input { border: none; outline: none; font-size: 20px; font-weight: 700; width: 100%; margin-left: 10px; }
 
   /* OTP */
-  .otp-boxes { display: flex; justify-content: space-between; margin: 35px 0 20px; }
+  .otp-boxes { display: flex; justify-content: space-between; margin: 30px 0 15px; }
   .otp-boxes input { width: 42px; height: 50px; border: none; border-bottom: 2.5px solid #ccc; text-align: center; font-size: 24px; font-weight: 800; outline: none; }
   .otp-boxes input:focus { border-bottom-color: #fe3c72; }
 
@@ -37,10 +37,18 @@
   .btn-submit { width: 100%; padding: 16px; border-radius: 30px; border: none; background: #e9ecef; color: #adb5bd; font-weight: 700; font-size: 16px; cursor: pointer; }
   .btn-submit.active-btn { background: linear-gradient(45deg, #fd297b, #ff655b); color: #fff; box-shadow: 0 4px 15px rgba(253,41,123,0.3); }
 
-  /* Profile Setup */
-  .input-underline { border: none; border-bottom: 2px solid #222; outline: none; font-size: 20px; font-weight: 700; width: 100%; padding: 10px 0; margin-top: 20px; }
-  .chip-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; max-height: 50vh; overflow-y: auto; }
-  .chip { padding: 10px 18px; border-radius: 25px; border: 1.5px solid #eee; background: #f8f9fa; font-size: 14px; font-weight: 600; cursor: pointer; color: #555; }
+  /* Inputs & Bio */
+  .input-underline { border: none; border-bottom: 2px solid #222; outline: none; font-size: 18px; font-weight: 700; width: 100%; padding: 10px 0; margin-top: 15px; }
+  .bio-area { width: 100%; border: 1.5px solid #ccc; border-radius: 12px; padding: 12px; font-size: 15px; outline: none; resize: none; margin-top: 15px; height: 90px; }
+
+  /* Photo Upload Box */
+  .photo-picker { width: 130px; height: 160px; border: 2px dashed #fe3c72; border-radius: 16px; margin: 20px auto; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #fff5f7; position: relative; overflow: hidden; }
+  .photo-picker img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .photo-picker span { font-size: 30px; }
+
+  /* Chips */
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+  .chip { padding: 9px 16px; border-radius: 25px; border: 1.5px solid #eee; background: #f8f9fa; font-size: 13px; font-weight: 600; cursor: pointer; color: #555; }
   .chip.selected { border-color: #fe3c72; background: rgba(254,60,114,0.1); color: #fe3c72; font-weight: 700; }
 
   /* Main Feed */
@@ -59,9 +67,10 @@
   .swipe-area { flex: 1; position: relative; background: #000; overflow: hidden; }
   .profile-card { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-radius: 12px; margin: 6px; }
   .top-banner { background: #fff; color: #111; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; align-self: center; }
-  .card-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%); border-radius: 12px; }
+  .card-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 55%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%); border-radius: 12px; }
   .card-content { position: relative; z-index: 2; color: #fff; margin-bottom: 75px; }
-  .tag-pill { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; margin-right: 6px; margin-top: 6px; display: inline-block; }
+  .tag-pill { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: 600; margin-right: 5px; margin-top: 5px; display: inline-block; }
+  
   .swipe-btns { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 30px; z-index: 5; }
   .s-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .s-pass { background: #21262e; color: #fd297b; }
@@ -70,9 +79,9 @@
   /* Match Modal */
   .match-modal { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(14,17,23,0.95); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; color: #fff; }
   .match-modal.show { display: flex; }
-  .match-title { font-size: 38px; font-weight: 900; background: linear-gradient(45deg, #fd297b, #ff655b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .match-title { font-size: 36px; font-weight: 900; background: linear-gradient(45deg, #fd297b, #ff655b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-  /* Chat System */
+  /* Real Chat Tab */
   .chat-list { flex: 1; overflow-y: auto; padding: 16px; }
   .chat-item { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; background: #1a1e24; margin-bottom: 10px; cursor: pointer; }
   .chat-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
@@ -84,12 +93,12 @@
   .msg-in { align-self: flex-start; background: #21262e; color: #fff; border-bottom-left-radius: 4px; }
   .msg-out { align-self: flex-end; background: #fe3c72; color: #fff; border-bottom-right-radius: 4px; }
   .chat-bar { padding: 10px 14px; background: #1a1e24; display: flex; gap: 8px; }
-  .chat-bar input { flex: 1; background: #21262e; border: none; border-radius: 20px; padding: 10px 16px; color: #fff; outline: none; }
+  .chat-bar input { flex: 1; background: #21262e; border: none; border-radius: 20px; padding: 10px 16px; color: #fff; outline: none; font-size: 14px; }
   .chat-bar button { background: #fe3c72; border: none; width: 40px; height: 40px; border-radius: 50%; color: #fff; font-weight: 700; cursor: pointer; }
 
   /* Profile Tab */
   .profile-screen { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-  .user-badge { width: 105px; height: 105px; border-radius: 50%; border: 3px solid #fe3c72; padding: 3px; object-fit: cover; }
+  .user-badge { width: 110px; height: 110px; border-radius: 50%; border: 3px solid #fe3c72; padding: 3px; object-fit: cover; }
   .profile-box { width: 100%; background: #1a1e24; border-radius: 16px; padding: 16px; margin-top: 16px; text-align: left; }
 </style>
 </head>
@@ -101,9 +110,9 @@
   <div class="view splash-view active" id="viewSplash">
     <div class="tinder-logo">🔥 Twogether</div>
     <div class="auth-btns">
-      <p style="font-size: 11px; margin-bottom: 8px; opacity: 0.9;">100% Real Users • 7 Days Free Access</p>
+      <p style="font-size: 11px; margin-bottom: 8px; opacity: 0.9;">Real Verified Profiles • Local Matchmaking</p>
       <button class="auth-btn" onclick="openPhoneInput()"><span>📞</span> Continue with Phone Number</button>
-      <button class="auth-btn" onclick="switchView('viewStepName')"><span>🌐</span> Continue with Google</button>
+      <button class="auth-btn" onclick="switchView('viewStepDetails')"><span>🌐</span> Continue with Google</button>
     </div>
   </div>
 
@@ -148,38 +157,45 @@
     </div>
   </div>
 
-  <!-- Profile Setup Step 1: Name & Age -->
-  <div class="view form-view" id="viewStepName">
+  <!-- Profile Step 1: Real Selfie / Gallery Upload & Bio -->
+  <div class="view form-view" id="viewStepDetails">
     <div>
       <div class="back-btn" onclick="switchView('viewOtp')">←</div>
-      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">My name is</h1>
-      <p style="color: #666; font-size: 14px;">This is how it will appear in your profile.</p>
-      <input type="text" id="profName" class="input-underline" placeholder="First Name">
+      <h1 style="font-size: 26px; font-weight: 800;">Create Profile</h1>
+      <p style="color: #666; font-size: 13px;">Upload your real selfie or photo</p>
       
-      <h1 style="font-size: 24px; font-weight: 800; margin-top: 30px; margin-bottom: 8px;">My age is</h1>
-      <input type="number" id="profAge" class="input-underline" placeholder="Age (e.g. 23)" min="18" max="99">
+      <input type="file" id="userPhotoInput" accept="image/*" style="display: none;" onchange="previewUserPhoto(event)">
+      <div class="photo-picker" onclick="document.getElementById('userPhotoInput').click()">
+        <span id="photoPlaceholderIcon">📷</span>
+        <p id="photoPlaceholderTxt" style="font-size: 12px; color: #fe3c72; font-weight: 700; margin-top: 5px;">Add Photo</p>
+        <img id="userPhotoPreview" alt="Selfie">
+      </div>
+
+      <input type="text" id="profName" class="input-underline" placeholder="First Name (e.g. Rahul)">
+      <input type="number" id="profAge" class="input-underline" placeholder="Age (e.g. 24)" min="18" max="99">
+      <textarea id="profBio" class="bio-area" placeholder="Write something about yourself (e.g. Looking for true connection, love music and traveling...)"></textarea>
     </div>
-    <div>
-      <button class="btn-submit active-btn" onclick="saveNameStep()">Continue</button>
+    <div style="margin-top: 15px;">
+      <button class="btn-submit active-btn" onclick="saveDetailsStep()">Continue</button>
     </div>
   </div>
 
-  <!-- Profile Setup Step 2: Gender -->
+  <!-- Profile Step 2: Gender -->
   <div class="view form-view" id="viewStepGender">
     <div>
-      <div class="back-btn" onclick="switchView('viewStepName')">←</div>
+      <div class="back-btn" onclick="switchView('viewStepDetails')">←</div>
       <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">I am a</h1>
       <div class="chip-grid">
-        <div class="chip selected" onclick="selectChip(this)">Man</div>
-        <div class="chip" onclick="selectChip(this)">Woman</div>
-        <div class="chip" onclick="selectChip(this)">Non-Binary</div>
+        <div class="chip selected" onclick="selectChip(this, 'myGender')">Man</div>
+        <div class="chip" onclick="selectChip(this, 'myGender')">Woman</div>
+        <div class="chip" onclick="selectChip(this, 'myGender')">Non-Binary</div>
       </div>
 
       <h1 style="font-size: 24px; font-weight: 800; margin-top: 35px; margin-bottom: 8px;">Show me</h1>
       <div class="chip-grid">
-        <div class="chip selected" onclick="selectChip(this)">Women</div>
-        <div class="chip" onclick="selectChip(this)">Men</div>
-        <div class="chip" onclick="selectChip(this)">Everyone</div>
+        <div class="chip selected" onclick="selectChip(this, 'showGender')">Women</div>
+        <div class="chip" onclick="selectChip(this, 'showGender')">Men</div>
+        <div class="chip" onclick="selectChip(this, 'showGender')">Everyone</div>
       </div>
     </div>
     <div>
@@ -187,14 +203,14 @@
     </div>
   </div>
 
-  <!-- Profile Setup Step 3: Passions -->
+  <!-- Profile Step 3: Passions -->
   <div class="view form-view" id="viewStepPassions">
     <div>
       <div class="back-btn" onclick="switchView('viewStepGender')">←</div>
       <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Passions</h1>
       <p style="color: #666; font-size: 14px;">Select your interests to discover matches.</p>
       
-      <div class="chip-grid">
+      <div class="chip-grid" id="passionsGrid">
         <div class="chip selected" onclick="toggleChip(this)">✈️ Travel</div>
         <div class="chip selected" onclick="toggleChip(this)">☕ Coffee</div>
         <div class="chip selected" onclick="toggleChip(this)">🎵 Music</div>
@@ -217,7 +233,7 @@
       <div class="wallet-pill" onclick="alert('🪙 50 Free Welcome Coins Active!')">🪙 50 Coins</div>
     </div>
 
-    <!-- Tab 1: Swipe -->
+    <!-- Tab 1: Swipe Feed -->
     <div class="tab-content active" id="tabSwipe">
       <div class="swipe-area" id="swipeCardArea"></div>
       <div class="swipe-btns">
@@ -234,13 +250,18 @@
     <!-- Tab 3: User Profile -->
     <div class="tab-content" id="tabProfile">
       <div class="profile-screen">
-        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400" class="user-badge">
-        <h2 style="font-size: 22px; font-weight: 800; margin-top: 10px;" id="dispProfileName">Rahul, 23</h2>
+        <img id="dispProfilePic" class="user-badge" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400">
+        <h2 style="font-size: 22px; font-weight: 800; margin-top: 10px;" id="dispProfileName">Rahul, 24</h2>
         <p style="font-size: 13px; color: #fe3c72; font-weight: 700;">Verified Account ✔</p>
         
         <div class="profile-box">
+          <p style="font-size: 12px; color: #8a96a3; font-weight: 700;">ABOUT ME</p>
+          <p id="dispProfileBio" style="font-size: 14px; margin-top: 6px; line-height: 1.4; color: #e2e8f0;">Looking for true connection ✨</p>
+        </div>
+
+        <div class="profile-box">
           <p style="font-size: 12px; color: #8a96a3; font-weight: 700;">MY PASSIONS</p>
-          <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+          <div id="dispProfileTags" style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
             <span class="tag-pill">✈️ Travel</span>
             <span class="tag-pill">☕ Coffee</span>
             <span class="tag-pill">🎵 Music</span>
@@ -261,14 +282,14 @@
     </div>
   </div>
 
-  <!-- Live 1-on-1 Chat Window -->
+  <!-- Live 1-on-1 User Chat -->
   <div class="chat-view" id="chatModal">
     <div class="chat-header">
       <div class="back-btn" style="margin: 0; font-size: 22px; color: #fff;" onclick="closeChatModal()">←</div>
       <img src="" id="chatHeaderImg" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
       <div style="flex: 1; color: #fff;">
         <div style="font-size: 15px; font-weight: 700;" id="chatHeaderName">User</div>
-        <div style="font-size: 11px; color: #00d26a;">● Active Now</div>
+        <div style="font-size: 11px; color: #00d26a;">● Matched User</div>
       </div>
     </div>
     <div class="chat-msgs" id="chatMessages"></div>
@@ -281,7 +302,7 @@
   <!-- Match Notification Modal -->
   <div class="match-modal" id="matchPopup">
     <div class="match-title">It's a Match! 🎉</div>
-    <p style="font-size: 15px; color: #cbd5e1; margin: 12px 0 25px;" id="matchSubText">You and Sabina liked each other.</p>
+    <p style="font-size: 15px; color: #cbd5e1; margin: 12px 0 25px;" id="matchSubText">You and Priya liked each other.</p>
     <button class="btn-submit active-btn" style="margin-bottom: 12px;" onclick="openMatchChat()">Send Message 💬</button>
     <button class="btn-submit" onclick="closeMatchPopup()">Keep Swiping</button>
   </div>
@@ -289,36 +310,52 @@
 </div>
 
 <script>
-const PROFILES = [
+// Community Base Pool for Live Matchmaking
+const DEFAULT_MEMBERS = [
   {
-    name: "Sabina Shaikh",
-    age: 22,
-    dist: "2.3 km away",
-    bio: "Coffee lover ☕ & UI designer. Looking for meaningful conversations!",
-    tags: ["☕ Coffee", "🎨 Art", "✈️ Travel"],
+    id: "user_1",
+    name: "Priya Sharma",
+    age: 23,
+    dist: "2.1 km away",
+    bio: "Love evening walks, acoustic coffee sessions & exploring new places ✈️",
+    tags: ["☕ Coffee", "✈️ Travel", "🎵 Music"],
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=700"
   },
   {
-    name: "Pooja Sharma",
+    id: "user_2",
+    name: "Ananya Iyer",
     age: 24,
-    dist: "4.1 km away",
-    bio: "Good vibes only ✨ Music, food & long evening drives.",
-    tags: ["🎵 Music", "🍕 Foodie", "🎬 Movies"],
+    dist: "3.5 km away",
+    bio: "Fitness fanatic & foodie. Let's grab coffee or go for a workout session 🏋️‍♀️",
+    tags: ["🏋️ Fitness", "🍕 Foodie", "🎬 Movies"],
     image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=700"
   },
   {
-    name: "Riya Verma",
-    age: 23,
-    dist: "1.8 km away",
-    bio: "Fitness fanatic 🏋️‍♀️ & animal lover. Let's hang out!",
-    tags: ["🏋️ Fitness", "🐶 Pets", "💻 Tech"],
+    id: "user_3",
+    name: "Sneha Patel",
+    age: 22,
+    dist: "1.4 km away",
+    bio: "Looking for meaningful connection. Dog lover 🐶 and tech geek 💻",
+    tags: ["🐶 Pets", "💻 Tech", "🎨 Art"],
     image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=700"
   }
 ];
 
 let cardIndex = 0;
 let currentOtp = "";
+let uploadedPhotoData = "";
 let currentActiveProfile = null;
+let activeChatId = null;
+
+// Persistent Local User Profiles
+function getCommunityProfiles() {
+  let list = JSON.parse(localStorage.getItem('twogether_members') || "[]");
+  if (list.length === 0) {
+    list = DEFAULT_MEMBERS;
+    localStorage.setItem('twogether_members', JSON.stringify(list));
+  }
+  return list;
+}
 
 function switchView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -346,7 +383,6 @@ function sendOtpCode() {
   const masked = "+91 " + phone.substring(0, 2) + "••••••" + phone.substring(8);
   document.getElementById('otpSentPhoneTxt').innerText = masked;
   
-  // Clear OTP input fields
   document.querySelectorAll('.otp-boxes input').forEach(inp => inp.value = '');
   document.getElementById('btnOtpVerify').classList.remove('active-btn');
 
@@ -375,20 +411,40 @@ function verifyOtpCode() {
   if (enteredOtp.length < 6) return;
 
   if (enteredOtp === currentOtp || enteredOtp.length === 6) {
-    switchView('viewStepName');
+    switchView('viewStepDetails');
   } else {
     alert("❌ Invalid OTP. Use the code sent in SMS: " + currentOtp);
   }
 }
 
-function saveNameStep() {
-  const name = document.getElementById('profName').value.trim() || 'Rahul';
-  const age = document.getElementById('profAge').value.trim() || '23';
-  document.getElementById('dispProfileName').innerText = name + ', ' + age;
+// User Selfie/Gallery Preview
+function previewUserPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    uploadedPhotoData = e.target.result;
+    const img = document.getElementById('userPhotoPreview');
+    img.src = uploadedPhotoData;
+    img.style.display = 'block';
+    document.getElementById('photoPlaceholderIcon').style.display = 'none';
+    document.getElementById('photoPlaceholderTxt').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveDetailsStep() {
+  const name = document.getElementById('profName').value.trim();
+  const age = document.getElementById('profAge').value.trim();
+  if (!name || !age) {
+    alert("Please enter your name and age.");
+    return;
+  }
   switchView('viewStepGender');
 }
 
-function selectChip(el) {
+function selectChip(el, group) {
   el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
 }
@@ -398,6 +454,36 @@ function toggleChip(el) {
 }
 
 function finishSetup() {
+  const name = document.getElementById('profName').value.trim() || 'Rahul Rai';
+  const age = document.getElementById('profAge').value.trim() || '24';
+  const bio = document.getElementById('profBio').value.trim() || 'Looking for genuine connection ✨';
+  
+  const tags = [];
+  document.querySelectorAll('#passionsGrid .chip.selected').forEach(c => tags.push(c.innerText));
+
+  const photo = uploadedPhotoData || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400";
+
+  // Set Profile Tab Data
+  document.getElementById('dispProfileName').innerText = `${name}, ${age}`;
+  document.getElementById('dispProfileBio').innerText = bio;
+  document.getElementById('dispProfilePic').src = photo;
+  document.getElementById('dispProfileTags').innerHTML = tags.map(t => `<span class="tag-pill">${t}</span>`).join('');
+
+  // Register New Real User to Member Feed Pool
+  const newMember = {
+    id: "user_" + Date.now(),
+    name: name,
+    age: parseInt(age),
+    dist: "0.1 km away",
+    bio: bio,
+    tags: tags,
+    image: photo
+  };
+  
+  let community = getCommunityProfiles();
+  community.unshift(newMember);
+  localStorage.setItem('twogether_members', JSON.stringify(community));
+
   switchView('viewMain');
   renderCard();
   renderChatList();
@@ -411,8 +497,9 @@ function switchNavTab(tabId, el) {
 }
 
 function renderCard() {
+  const profiles = getCommunityProfiles();
   const area = document.getElementById('swipeCardArea');
-  if (cardIndex >= PROFILES.length) {
+  if (cardIndex >= profiles.length) {
     area.innerHTML = `
       <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; color:#fff; padding:20px;">
         <h2>No more profiles nearby</h2>
@@ -423,14 +510,14 @@ function renderCard() {
     return;
   }
 
-  const p = PROFILES[cardIndex];
+  const p = profiles[cardIndex];
   currentActiveProfile = p;
   area.innerHTML = `
     <div class="profile-card" style="background-image: url('${p.image}');">
-      <div class="top-banner">📍 ${p.dist} • Verified Real User</div>
+      <div class="top-banner">📍 ${p.dist} • Real Verified User</div>
       <div class="card-gradient"></div>
       <div class="card-content">
-        <h1 style="font-size: 28px; font-weight:800;">${p.name}, ${p.age} ✔</h1>
+        <h1 style="font-size: 26px; font-weight:800;">${p.name}, ${p.age} ✔</h1>
         <p style="font-size: 13px; color: #cbd5e1; margin: 4px 0 8px;">${p.bio}</p>
         <div>
           ${p.tags.map(t => `<span class="tag-pill">${t}</span>`).join('')}
@@ -441,10 +528,11 @@ function renderCard() {
 }
 
 function handleSwipe(action) {
-  if (cardIndex >= PROFILES.length) return;
+  const profiles = getCommunityProfiles();
+  if (cardIndex >= profiles.length) return;
   
   if (action === 'like') {
-    document.getElementById('matchSubText').innerText = `You and ${currentActiveProfile.name} liked each other!`;
+    document.getElementById('matchSubText').innerText = `You and ${currentActiveProfile.name} connected!`;
     document.getElementById('matchPopup').classList.add('show');
   } else {
     cardIndex++;
@@ -460,28 +548,37 @@ function closeMatchPopup() {
 
 function openMatchChat() {
   closeMatchPopup();
-  startChat(currentActiveProfile.name, currentActiveProfile.image);
+  startChat(currentActiveProfile.id, currentActiveProfile.name, currentActiveProfile.image);
 }
 
 function renderChatList() {
+  const profiles = getCommunityProfiles();
   const list = document.getElementById('chatList');
-  list.innerHTML = PROFILES.map(p => `
-    <div class="chat-item" onclick="startChat('${p.name}', '${p.image}')">
+  list.innerHTML = profiles.map(p => `
+    <div class="chat-item" onclick="startChat('${p.id}', '${p.name}', '${p.image}')">
       <img src="${p.image}" class="chat-avatar">
       <div style="flex:1; color:#fff;">
         <div style="font-size:15px; font-weight:700;">${p.name}</div>
-        <div style="font-size:13px; color:#8a96a3;">Hey! We matched on Twogether 👋</div>
+        <div style="font-size:13px; color:#8a96a3;">Matched on Twogether</div>
       </div>
     </div>
   `).join('');
 }
 
-function startChat(name, img) {
+function startChat(id, name, img) {
+  activeChatId = id;
   document.getElementById('chatHeaderName').innerText = name;
   document.getElementById('chatHeaderImg').src = img;
-  document.getElementById('chatMessages').innerHTML = `
-    <div class="msg-bubble msg-in">Hey! Great to connect with you 😊</div>
-  `;
+  
+  // Load User Sent Messages
+  const storedMsgs = JSON.parse(localStorage.getItem('chat_' + id) || "[]");
+  const area = document.getElementById('chatMessages');
+  area.innerHTML = '';
+  
+  storedMsgs.forEach(m => {
+    area.innerHTML += `<div class="msg-bubble msg-out">${m}</div>`;
+  });
+
   document.getElementById('chatModal').classList.add('active');
 }
 
@@ -496,13 +593,14 @@ function sendChatMessage() {
 
   const area = document.getElementById('chatMessages');
   area.innerHTML += `<div class="msg-bubble msg-out">${text}</div>`;
+  
+  // Save Message Locally
+  const storedMsgs = JSON.parse(localStorage.getItem('chat_' + activeChatId) || "[]");
+  storedMsgs.push(text);
+  localStorage.setItem('chat_' + activeChatId, JSON.stringify(storedMsgs));
+
   input.value = '';
   area.scrollTop = area.scrollHeight;
-
-  setTimeout(() => {
-    area.innerHTML += `<div class="msg-bubble msg-in">Sounds wonderful! What are you doing today? ✨</div>`;
-    area.scrollTop = area.scrollHeight;
-  }, 900);
 }
 </script>
 </body>
