@@ -5,10 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Twogether</title>
 
-<!-- Firebase SDKs for Real Free SMS OTP & Google Auth -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -19,19 +18,19 @@
   .view.active { display: flex; }
   .view.dark { background: #111419; color: #fff; }
 
-  /* 1. Splash Screen */
+  /* Splash */
   .splash-view { background: linear-gradient(180deg, #fd297b 0%, #ff5864 50%, #ff655b 100%); color: #fff; padding: 40px 24px; justify-content: space-between; align-items: center; text-align: center; }
   .tinder-logo { font-size: 44px; font-weight: 900; letter-spacing: -1px; margin-top: 130px; }
   .auth-btns { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
   .auth-btn { width: 100%; padding: 15px; border-radius: 30px; border: none; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; background: #fff; color: #222; }
 
-  /* 2. Common Form Views */
+  /* Forms */
   .form-view { padding: 24px; flex-direction: column; justify-content: space-between; }
   .back-btn { font-size: 26px; cursor: pointer; width: 30px; margin-bottom: 15px; }
   .phone-input-wrap { display: flex; align-items: center; border-bottom: 2px solid #222; padding: 10px 0; margin-top: 30px; font-size: 20px; font-weight: 700; }
   .phone-input-wrap input { border: none; outline: none; font-size: 20px; font-weight: 700; width: 100%; margin-left: 10px; }
 
-  /* OTP Boxes */
+  /* OTP */
   .otp-boxes { display: flex; justify-content: space-between; margin: 35px 0 20px; }
   .otp-boxes input { width: 42px; height: 50px; border: none; border-bottom: 2.5px solid #ccc; text-align: center; font-size: 24px; font-weight: 800; outline: none; }
   .otp-boxes input:focus { border-bottom-color: #fe3c72; }
@@ -39,10 +38,7 @@
   .btn-submit { width: 100%; padding: 16px; border-radius: 30px; border: none; background: #e9ecef; color: #adb5bd; font-weight: 700; font-size: 16px; cursor: pointer; }
   .btn-submit.active-btn { background: linear-gradient(45deg, #fd297b, #ff655b); color: #fff; box-shadow: 0 4px 15px rgba(253,41,123,0.3); }
 
-  /* 3. Location Screen */
-  .loc-pin { width: 120px; height: 120px; border-radius: 50%; background: #f8f9fa; display: flex; align-items: center; justify-content: center; margin: 40px auto; font-size: 50px; }
-
-  /* Top & Bottom Bars */
+  /* Main Feed */
   .top-bar { height: 56px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; background: #fff; border-bottom: 1px solid #eee; z-index: 10; }
   .dark .top-bar { background: #111419; border-bottom: 1px solid #222; }
   .logo-text { font-size: 22px; font-weight: 900; background: linear-gradient(45deg, #fd297b, #ff655b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -54,7 +50,6 @@
   .nav-item.active { color: #fe3c72; }
   .nav-icon { font-size: 20px; }
 
-  /* Swipe Screen */
   .swipe-area { flex: 1; position: relative; background: #000; overflow: hidden; }
   .profile-card { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-radius: 12px; margin: 6px; }
   .top-banner { background: #fff; color: #111; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; align-self: center; }
@@ -65,34 +60,24 @@
   .s-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .s-pass { background: #21262e; color: #fd297b; }
   .s-like { background: #fe3c72; color: #fff; }
-
-  /* Chat & Modals */
-  .chat-wrap { padding: 16px; overflow-y: auto; flex: 1; background: #fff; }
-  .chat-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f0f2f5; cursor: pointer; }
-  .chat-row img { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; }
-  .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 999; justify-content: center; align-items: flex-end; }
-  .modal-overlay.active { display: flex; }
-  .modal-sheet { width: 100%; background: #fff; border-radius: 24px 24px 0 0; padding: 24px; color: #111; max-height: 85%; overflow-y: auto; }
 </style>
 </head>
 <body>
 
 <div class="app-container">
-
-  <!-- Invisible reCAPTCHA for Real SMS -->
   <div id="recaptcha-container"></div>
 
-  <!-- 1. Splash Screen -->
+  <!-- Splash Screen -->
   <div class="view splash-view active" id="viewSplash">
     <div class="tinder-logo">🔥 Twogether</div>
     <div class="auth-btns">
       <p style="font-size: 11px; margin-bottom: 8px; opacity: 0.9;">100% Real Users • 7 Days Free Access</p>
       <button class="auth-btn" onclick="openPhoneInput()"><span>📞</span> Continue with Phone Number</button>
-      <button class="auth-btn" onclick="handleGoogleSignIn()"><span>🌐</span> Continue with Google</button>
+      <button class="auth-btn" onclick="switchView('viewLocation')"><span>🌐</span> Continue with Google</button>
     </div>
   </div>
 
-  <!-- 2. Phone Number Input View -->
+  <!-- Phone Screen -->
   <div class="view form-view" id="viewPhone">
     <div>
       <div class="back-btn" onclick="switchView('viewSplash')">←</div>
@@ -104,16 +89,16 @@
       </div>
     </div>
     <div>
-      <button class="btn-submit" id="btnPhoneNext" onclick="sendRealFirebaseSms()">Send SMS Code</button>
+      <button class="btn-submit" id="btnPhoneNext" onclick="sendOtpCode()">Send SMS Code</button>
     </div>
   </div>
 
-  <!-- 3. Real OTP Code Input View -->
+  <!-- OTP Screen -->
   <div class="view form-view" id="viewOtp">
     <div>
       <div class="back-btn" onclick="switchView('viewPhone')">←</div>
       <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px;">Enter SMS code</h1>
-      <p style="color: #666; font-size: 14px;" id="otpSentPhoneTxt">Enter the 6-digit code sent to your phone</p>
+      <p style="color: #666; font-size: 14px;" id="otpSentPhoneTxt">Enter the 6-digit code</p>
       <div class="otp-boxes">
         <input type="tel" maxlength="1" oninput="handleOtp(this, 0)">
         <input type="tel" maxlength="1" oninput="handleOtp(this, 1)">
@@ -124,124 +109,41 @@
       </div>
     </div>
     <div>
-      <button class="btn-submit" id="btnOtpVerify" onclick="verifyFirebaseOtp()">Verify & Continue</button>
+      <button class="btn-submit" id="btnOtpVerify" onclick="verifyOtpCode()">Verify & Continue</button>
     </div>
   </div>
 
-  <!-- 4. Location Permission Screen -->
+  <!-- Location Screen -->
   <div class="view form-view" id="viewLocation" style="text-align: center;">
     <div>
       <h1 style="font-size: 26px; font-weight: 800; margin-top: 20px;">Allow GPS Location</h1>
       <p style="color: #666; font-size: 14px; margin-top: 15px; line-height: 1.4;">Match with verified real people in your neighborhood.</p>
     </div>
-    <div class="loc-pin">📍</div>
+    <div style="width:100px; height:100px; border-radius:50%; background:#f0f2f5; display:flex; align-items:center; justify-content:center; margin:40px auto; font-size:45px;">📍</div>
     <div>
-      <button class="btn-submit active-btn" style="background: #111; color: #fff; margin-bottom: 15px;" onclick="allowGpsAndEnter()">Allow Location</button>
-      <p style="font-size: 13px; font-weight: 700; color: #111;">How is my location used? ↓</p>
+      <button class="btn-submit active-btn" style="background: #111; color: #fff;" onclick="switchTab('viewSwipe')">Allow Location</button>
     </div>
   </div>
 
-  <!-- 5. Main Swipe Feed -->
+  <!-- Swipe Screen -->
   <div class="view dark" id="viewSwipe">
     <div class="top-bar">
       <div class="logo-text">🔥 Twogether</div>
-      <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountHeader">50</span> Coins</div>
+      <div class="wallet-pill">🪙 50 Coins</div>
     </div>
     <div class="swipe-area" id="swipeCardArea"></div>
     <div class="bottom-nav">
-      <div class="nav-item active" onclick="switchTab('viewSwipe')"><span class="nav-icon">🔥</span>Swipe</div>
-      <div class="nav-item" onclick="switchTab('viewExplore')"><span class="nav-icon">🧭</span>Explore</div>
-      <div class="nav-item" onclick="switchTab('viewChat')"><span class="nav-icon">💬</span>Chat</div>
-      <div class="nav-item" onclick="switchTab('viewProfile')"><span class="nav-icon">👤</span>Profile</div>
-    </div>
-  </div>
-
-  <!-- 6. Explore View -->
-  <div class="view" id="viewExplore">
-    <div class="top-bar">
-      <h2 style="font-size: 22px; font-weight: 900;">Explore</h2>
-      <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountExp">50</span></div>
-    </div>
-    <div style="padding: 16px; overflow-y: auto; flex: 1;">
-      <div style="background: linear-gradient(135deg, #fd297b, #ff655b); color: #fff; padding: 18px; border-radius: 16px; margin-bottom: 16px; cursor: pointer;" onclick="openStoreModal()">
-        <h3 style="font-size: 18px; font-weight: 800;">Get Tinder Gold 💎</h3>
-        <p style="font-size: 12px; margin-top: 4px; opacity: 0.9;">Unlimited Chats without spending coins + See who liked you!</p>
-      </div>
-      <h3 style="font-size: 16px; margin-bottom: 10px;">Categories</h3>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">📺 Binge Watchers</div>
-        <div style="background: #f8f9fa; padding: 16px; border-radius: 14px; text-align: center;">🌹 Serious Dating</div>
-      </div>
-    </div>
-    <div class="bottom-nav">
-      <div class="nav-item" onclick="switchTab('viewSwipe')"><span class="nav-icon">🔥</span>Swipe</div>
-      <div class="nav-item active" onclick="switchTab('viewExplore')"><span class="nav-icon">🧭</span>Explore</div>
-      <div class="nav-item" onclick="switchTab('viewChat')"><span class="nav-icon">💬</span>Chat</div>
-      <div class="nav-item" onclick="switchTab('viewProfile')"><span class="nav-icon">👤</span>Profile</div>
-    </div>
-  </div>
-
-  <!-- 7. Chat View -->
-  <div class="view" id="viewChat">
-    <div class="top-bar">
-      <h2 style="font-size: 22px; font-weight: 900;">Matches & Chat</h2>
-      <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountChat">50</span></div>
-    </div>
-    <div class="chat-wrap">
-      <div class="chat-row">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" alt="">
-        <div style="flex:1;">
-          <div style="font-weight: 800; font-size: 15px;">Sabina Shaikh ✔</div>
-          <div style="font-size: 12px; color: #2ed573;">📍 2.3 km away • Online</div>
-        </div>
-      </div>
-    </div>
-    <div class="bottom-nav">
-      <div class="nav-item" onclick="switchTab('viewSwipe')"><span class="nav-icon">🔥</span>Swipe</div>
-      <div class="nav-item" onclick="switchTab('viewExplore')"><span class="nav-icon">🧭</span>Explore</div>
-      <div class="nav-item active" onclick="switchTab('viewChat')"><span class="nav-icon">💬</span>Chat</div>
-      <div class="nav-item" onclick="switchTab('viewProfile')"><span class="nav-icon">👤</span>Profile</div>
-    </div>
-  </div>
-
-  <!-- 8. Profile View -->
-  <div class="view" id="viewProfile">
-    <div class="top-bar">
-      <h2 style="font-size: 22px; font-weight: 900;">My Profile</h2>
-      <div class="wallet-pill" onclick="openStoreModal()">🪙 <span id="coinCountProf">50</span></div>
-    </div>
-    <div style="padding: 24px 16px; text-align: center;">
-      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #fe3c72; margin-bottom: 10px;">
-      <h2 style="font-size: 20px; font-weight: 800;" id="userProfileDisplayName">Rahul Rai ✔</h2>
-      <p style="color: #777; font-size: 13px;">📍 Live GPS Connected</p>
-      <button class="btn-submit active-btn" style="margin-top: 25px;" onclick="openStoreModal()">💎 Buy Coins / VIP Membership</button>
-    </div>
-    <div class="bottom-nav">
-      <div class="nav-item" onclick="switchTab('viewSwipe')"><span class="nav-icon">🔥</span>Swipe</div>
-      <div class="nav-item" onclick="switchTab('viewExplore')"><span class="nav-icon">🧭</span>Explore</div>
-      <div class="nav-item" onclick="switchTab('viewChat')"><span class="nav-icon">💬</span>Chat</div>
-      <div class="nav-item active" onclick="switchTab('viewProfile')"><span class="nav-icon">👤</span>Profile</div>
-    </div>
-  </div>
-
-  <!-- Store Modal -->
-  <div class="modal-overlay" id="storeModal">
-    <div class="modal-sheet">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-        <h2 style="font-size: 20px; font-weight: 900;">Coins & VIP Plans</h2>
-        <span style="font-size: 24px; cursor: pointer;" onclick="closeStoreModal()">✕</span>
-      </div>
-      <button class="btn-submit active-btn" style="background:#2ed573; margin-bottom:12px;" onclick="watchVideoAd()">📺 Watch Ad (+10 Coins Free)</button>
-      <button class="btn-submit active-btn" onclick="alert('Razorpay UPI connected!')">👑 1 Month VIP Pass (₹399)</button>
+      <div class="nav-item active"><span class="nav-icon">🔥</span>Swipe</div>
+      <div class="nav-item"><span class="nav-icon">💬</span>Chat</div>
+      <div class="nav-item"><span class="nav-icon">👤</span>Profile</div>
     </div>
   </div>
 
 </div>
 
 <script>
-// Official Connected Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAUzDcPhiQIFvyY-XEd15GvWFBJaA7p-Hk",
+  apiKey: "AIzaSyBg4J1w0uXAbMDTz84s6iDsBwG5hh_FFzk",
   authDomain: "twogether-dating.firebaseapp.com",
   projectId: "twogether-dating",
   storageBucket: "twogether-dating.firebasestorage.app",
@@ -249,18 +151,11 @@ const firebaseConfig = {
   appId: "1:97773407634:web:b1db2aefc95e13c3f0454b"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 let confirmationResult = null;
-let userCoins = 50;
-let currentProfileIdx = 0;
-
-window.onload = function() {
-  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-    'size': 'invisible'
-  });
-};
 
 function switchView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -270,7 +165,6 @@ function switchView(id) {
 function switchTab(id) {
   switchView(id);
   if (id === 'viewSwipe') renderCard();
-  updateCoinDisplays();
 }
 
 function openPhoneInput() {
@@ -288,37 +182,34 @@ function checkPhoneLength(el) {
   }
 }
 
-function sendRealFirebaseSms() {
+function sendOtpCode() {
   const phone = document.getElementById('userPhoneNumber').value.trim();
   if (phone.length < 10) return;
 
-  const fullPhoneNumber = "+91" + phone;
-  document.getElementById('otpSentPhoneTxt').innerText = `SMS Code sent to ${fullPhoneNumber}`;
-  
-  // Send Official SMS via Firebase
-  const appVerifier = window.recaptchaVerifier;
-  firebase.auth().signInWithPhoneNumber(fullPhoneNumber, appVerifier)
-    .then((result) => {
-      confirmationResult = result;
-      document.querySelectorAll('.otp-boxes input').forEach(inp => inp.value = '');
-      document.getElementById('btnOtpVerify').classList.remove('active-btn');
-      switchView('viewOtp');
-    }).catch((error) => {
-      alert("SMS Error: " + error.message);
-    });
-}
+  const btn = document.getElementById('btnPhoneNext');
+  btn.innerText = "Requesting SMS...";
+  btn.disabled = true;
 
-function handleGoogleSignIn() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user;
-      if (user.displayName) {
-        document.getElementById('userProfileDisplayName').innerText = user.displayName + " ✔";
-      }
-      switchView('viewLocation');
-    }).catch((error) => {
-      alert("Google Sign-in Error: " + error.message);
+  const fullPhoneNumber = "+91" + phone;
+  document.getElementById('otpSentPhoneTxt').innerText = "Code sent to " + fullPhoneNumber;
+
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      'size': 'invisible'
+    });
+  }
+
+  firebase.auth().signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier)
+    .then((res) => {
+      confirmationResult = res;
+      btn.innerText = "Send SMS Code";
+      btn.disabled = false;
+      switchView('viewOtp');
+    })
+    .catch((err) => {
+      btn.innerText = "Send SMS Code";
+      btn.disabled = false;
+      alert(err.message);
     });
 }
 
@@ -335,39 +226,18 @@ function handleOtp(el, idx) {
   }
 }
 
-function verifyFirebaseOtp() {
+function verifyOtpCode() {
   let enteredOtp = '';
   document.querySelectorAll('.otp-boxes input').forEach(inp => enteredOtp += inp.value);
   if (enteredOtp.length < 6) return;
 
   if (confirmationResult) {
     confirmationResult.confirm(enteredOtp)
-      .then((result) => {
-        switchView('viewLocation');
-      }).catch((error) => {
-        alert("❌ Invalid SMS Code: " + error.message);
-      });
+      .then(() => switchView('viewLocation'))
+      .catch(() => alert("❌ Invalid SMS Code. Please re-check."));
   } else {
     switchView('viewLocation');
   }
-}
-
-function allowGpsAndEnter() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      () => switchTab('viewSwipe'),
-      () => switchTab('viewSwipe')
-    );
-  } else {
-    switchTab('viewSwipe');
-  }
-}
-
-function updateCoinDisplays() {
-  document.getElementById('coinCountHeader').innerText = userCoins;
-  document.getElementById('coinCountExp').innerText = userCoins;
-  document.getElementById('coinCountChat').innerText = userCoins;
-  document.getElementById('coinCountProf').innerText = userCoins;
 }
 
 function renderCard() {
@@ -377,47 +247,16 @@ function renderCard() {
       <div class="top-banner">📍 2.3 km away • Verified Real User</div>
       <div class="card-gradient"></div>
       <div class="card-content">
-        <h1 style="font-size: 28px; font-weight:800;">Sabina Shaikh 22 <span style="font-size:20px;">✔</span></h1>
+        <h1 style="font-size: 28px; font-weight:800;">Sabina Shaikh 22 ✔</h1>
         <div style="font-size: 13px; margin: 4px 0 10px;">📍 GPS Matched Near You</div>
-        <div>
-          <span class="tag-pill">Biryani</span>
-          <span class="tag-pill">Music</span>
-          <span class="tag-pill">Dancing</span>
-        </div>
       </div>
       <div class="swipe-btns">
-        <button class="s-btn s-pass" onclick="actionSwipe('left')">✕</button>
-        <button class="s-btn s-like" onclick="actionSwipe('right')">❤</button>
+        <button class="s-btn s-pass">✕</button>
+        <button class="s-btn s-like">❤</button>
       </div>
     </div>
   `;
 }
-
-function actionSwipe(dir) {
-  const card = document.querySelector('.profile-card');
-  if (!card) return;
-  card.style.transition = '0.3s ease';
-  card.style.transform = dir === 'left' ? 'translateX(-120%) rotate(-15deg)' : 'translateX(120%) rotate(15deg)';
-  card.style.opacity = '0';
-  setTimeout(() => {
-    renderCard();
-  }, 300);
-}
-
-function openStoreModal() { document.getElementById('storeModal').classList.add('active'); }
-function closeStoreModal() { document.getElementById('storeModal').classList.remove('active'); }
-
-function watchVideoAd() {
-  closeStoreModal();
-  alert("📺 AdMob Video Playing... (Simulated 5s)");
-  setTimeout(() => {
-    userCoins += 10;
-    updateCoinDisplays();
-    alert("🎉 You received +10 Free Coins for watching video ad!");
-  }, 2000);
-}
-
-updateCoinDisplays();
 </script>
 </body>
 </html>
