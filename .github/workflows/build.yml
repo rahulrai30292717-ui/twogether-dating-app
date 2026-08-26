@@ -19,16 +19,19 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 18
 
-    - name: Install Cordova & Build Android
+    - name: Build Cordova Android APK
       run: |
         npm install -g cordova
-        cordova platform add android
-        cordova build android --debug
+        cordova platform add android@12.0.1 --no-telemetry
+        cordova build android --debug --no-telemetry
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
